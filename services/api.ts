@@ -125,10 +125,14 @@ async function apiFetch(path: string, init?: RequestInit) {
   return res;
 }
 
-export async function sendMessage(payload: ChatRequest): Promise<ChatResponse> {
+export async function sendMessage(
+  payload: ChatRequest,
+  options?: { signal?: AbortSignal }
+): Promise<ChatResponse> {
   const res = await apiFetch("/chat", {
     method: "POST",
     body: JSON.stringify(payload),
+    signal: options?.signal,
   });
 
   return res.json();

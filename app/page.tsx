@@ -76,6 +76,7 @@ export default function LandingPage() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [loggingInAs, setLoggingInAs] = useState<string | null>(null);
+  const showDevelopmentAccess = process.env.NODE_ENV === "development";
 
   useEffect(() => {
     let active = true;
@@ -268,6 +269,7 @@ export default function LandingPage() {
                 </a>
               </div>
 
+              {showDevelopmentAccess ? (
               <div className="rounded-[1.5rem] border border-amber-300/20 bg-amber-500/10 p-4">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/90">
                   Acesso local de desenvolvimento
@@ -305,34 +307,30 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
+              ) : null}
             </div>
 
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl">
               <div className="flex items-center gap-3 text-emerald-200">
                 <Sparkles size={18} />
-                <span className="text-sm font-medium">O que voce encontra ao entrar</span>
+                <span className="text-sm font-medium">Prévia demonstrativa do copiloto</span>
               </div>
 
               <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
-                  <div className="text-sm font-semibold text-white">Perguntas diretas</div>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-                    Pergunte sobre declaracao, deducoes, FGTS, financiamentos e outros temas do IR.
-                  </p>
+                <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-emerald-400 px-4 py-3 text-sm leading-6 text-slate-950">
+                  Recebi um informe de rendimentos. Qual é o próximo passo?
                 </div>
-
-                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
-                  <div className="text-sm font-semibold text-white">Triagem guiada</div>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-                    Siga perguntas curtas para montar um panorama do seu caso e chegar a um checklist final.
+                <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-white/10 bg-slate-950/55 p-4">
+                  <div className="text-sm font-semibold text-white">DeclarIA</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    Vamos identificar o documento, conferir o ano-calendário e organizar os campos que precisam de revisão antes da declaração.
                   </p>
+                  <div className="mt-3 inline-flex rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-100">
+                    Próxima ação: enviar o informe
+                  </div>
                 </div>
-
-                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
-                  <div className="text-sm font-semibold text-white">Documentos e historico</div>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-                    Seus arquivos e conversas ficam ligados a conta para retomar o contexto com mais seguranca.
-                  </p>
+                <div className="rounded-2xl border border-sky-300/15 bg-sky-400/10 px-4 py-3 text-xs leading-5 text-sky-100">
+                  Exemplo ilustrativo. O DeclarIA sinaliza incertezas e mostra as fontes disponíveis; confirme os dados antes do uso fiscal.
                 </div>
               </div>
             </div>
@@ -376,43 +374,24 @@ export default function LandingPage() {
                   Bem-vindo de volta, {authUser.name?.split(" ")[0] || "voce"}.
                 </h1>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 lg:text-lg">
-                  Sua navegacao agora se adapta ao papel da conta e ao plano ativo. Voce ve primeiro o que ajuda no seu fluxo, sem perder acesso ao que importa.
+                  Continue sua jornada da declaração a partir da próxima ação útil para sua conta.
                 </p>
               </div>
               <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/35 p-4">
                 <div className="flex items-center gap-2 text-emerald-200">
                   <Sparkles size={16} />
-                  <span className="text-sm font-medium">Como esta conta esta configurada</span>
+                  <span className="text-sm font-medium">Próxima ação recomendada</span>
                 </div>
-                <div className="mt-3 space-y-2 text-sm text-slate-300">
-                  <div>
-                    <strong>Papel:</strong> {getRoleLabel(authUser.role)}
-                  </div>
-                  <div>
-                    <strong>Plano:</strong> {getPlanLabel(authUser.plan)}
-                  </div>
-                  <div>
-                    <strong>Assinatura:</strong> {subscriptionStatusLabel}
-                  </div>
-                  <div>
-                    <strong>Upload:</strong> {uploadAllowed ? "liberado" : "disponivel no Premium"}
-                  </div>
-                  <div>
-                    <strong>Chat:</strong>{" "}
-                    {remainingInteractions == null
-                      ? "sem limite configurado para este plano"
-                      : `${remainingInteractions} interacoes restantes neste mes`}
-                  </div>
-                  {canAccessTechnicalUploads(authUser.role) ? (
-                    <div>
-                      <strong>Observabilidade:</strong> habilitada para revisar OCR, parser e mapeamento.
-                    </div>
-                  ) : null}
-                  {canManageKnowledgeBase(authUser.role) ? (
-                    <div>
-                      <strong>Base ativa:</strong> pode ser trocada no perfil dentro do chat.
-                    </div>
-                  ) : null}
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  {authUser.usage?.chat_interactions_used
+                    ? "Retome sua conversa e avance nos pontos ainda pendentes."
+                    : "Comece com uma dúvida ou uma triagem curta para organizar seu caso."}
+                </p>
+                <Link href="/chat" className="mt-4 inline-flex rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:brightness-110">
+                  {authUser.usage?.chat_interactions_used ? "Retomar jornada" : "Começar agora"}
+                </Link>
+                <div className="mt-4 border-t border-white/10 pt-3 text-xs text-slate-400">
+                  Plano {getPlanLabel(authUser.plan)} · {remainingInteractions == null ? "chat sem limite configurado" : `${remainingInteractions} interações restantes`}
                 </div>
                 {subscriptionStatus === "past_due" ? (
                   <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-500/10 px-3 py-3 text-sm leading-6 text-amber-100">

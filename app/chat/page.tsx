@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, PanelLeftOpen, X } from "lucide-react";
 import { toast } from "sonner";
 import ChatComposer from "@/components/chat/ChatComposer";
 import { LoadingMessage, MessageBubble } from "@/components/chat/MessageBubble";
@@ -52,7 +52,6 @@ const QUICK_PROMPTS = [
   "Como declarar FGTS no imposto de renda?",
   "Quero fazer uma triagem para saber se preciso declarar",
   "Como declarar financiamento imobiliario?",
-  "Despesas medicas com reembolso podem ser deduzidas?",
 ];
 const FEATURED_TOPIC_PROMPTS = [
   {
@@ -1029,6 +1028,7 @@ export default function HomePage() {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [highlightedHistoryId, setHighlightedHistoryId] = useState<string | null>(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [profilePreferences, setProfilePreferences] = useState<ProfilePreferences>(
     DEFAULT_PROFILE_PREFERENCES
   );
@@ -1057,6 +1057,7 @@ export default function HomePage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const streamingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestAbortControllerRef = useRef<AbortController | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const profileSyncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastProfilePayloadRef = useRef<string>("");
@@ -2020,6 +2021,8 @@ export default function HomePage() {
 
     try {
       setRateLimitedUntil(null);
+      const requestController = new AbortController();
+      requestAbortControllerRef.current = requestController;
       const res = await sendMessage({
         message: effectiveMessage,
         conversation_id: conversationId,
@@ -2032,7 +2035,7 @@ export default function HomePage() {
               review_label: documentReviewContext.reviewLabel ?? null,
             }
           : undefined,
-      });
+      }, { signal: requestController.signal });
 
       setConversationId(res.conversation_id ?? null);
       setResponse(res);
@@ -2081,6 +2084,11 @@ export default function HomePage() {
         setMessage(effectiveMessage === "Analise os arquivos enviados e me diga como isso entra na declaracao do IR." ? "" : effectiveMessage);
       }
 
+      if (err instanceof DOMException && err.name === "AbortError") {
+        setError("Resposta cancelada. Sua mensagem foi preservada para tentar novamente.");
+        return;
+      }
+
       const rawErrorMessage =
         err instanceof Error ? err.message : "Erro ao chamar o backend.";
       const errorMessage = getFriendlyErrorMessage(rawErrorMessage);
@@ -2104,6 +2112,7 @@ export default function HomePage() {
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
+      requestAbortControllerRef.current = null;
       setLoading(false);
     }
   }
@@ -2393,8 +2402,8 @@ export default function HomePage() {
       />
 
       <section className="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-[1600px] flex-col gap-3 px-3 py-3 sm:min-h-[calc(100vh-2rem)] sm:px-4 sm:py-4 lg:px-5 lg:py-4 xl:px-6">
-        <div className="grid min-h-0 flex-1 gap-3 xl:grid-cols-[285px_minmax(0,1fr)] xl:items-start">
-          <SidebarPanels
+        <div className={`grid min-h-0 flex-1 gap-3 xl:items-start ${desktopSidebarOpen ? "xl:grid-cols-[285px_minmax(0,1fr)]" : "xl:grid-cols-1"}`}>
+          {desktopSidebarOpen ? <SidebarPanels
             historyItems={historyItems}
             activeHistoryId={conversationId}
             highlightedHistoryId={highlightedHistoryId}
@@ -2413,7 +2422,8 @@ export default function HomePage() {
             isDark={isDark}
             triageProfile={response?.triage_profile}
             activeTaxYear={activeTaxYear}
-          />
+            onCollapse={() => setDesktopSidebarOpen(false)}
+          /> : null}
 
           <div
             className={`flex min-h-0 flex-col overflow-hidden rounded-[1.6rem] border shadow-[0_18px_46px_rgba(15,23,42,0.10)] ${isDark ? "border-white/10 bg-[#111827]" : "border-slate-200 bg-white"
@@ -2425,6 +2435,16 @@ export default function HomePage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
+                  {!desktopSidebarOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setDesktopSidebarOpen(true)}
+                      className={`mb-2 hidden items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-medium xl:inline-flex ${isDark ? "border-white/10 text-slate-300 hover:bg-white/10" : "border-slate-200 text-slate-600 hover:bg-slate-100"}`}
+                      aria-label="Abrir histórico de conversas"
+                    >
+                      <PanelLeftOpen size={15} /> Histórico
+                    </button>
+                  ) : null}
                   <h1
                     className={`text-[1.7rem] font-semibold tracking-tight lg:text-[2rem] ${isDark ? "text-white" : "text-slate-900"
                       }`}
@@ -3054,7 +3074,9 @@ export default function HomePage() {
                           ))}
                         </div>
                       </div>
-                      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]">
+                      <details className="mt-6 rounded-2xl border border-current/10 px-4 py-3">
+                        <summary className="cursor-pointer text-sm font-medium">Explorar mais temas e atalhos</summary>
+                      <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]">
                         <div>
                           <div className={`text-left text-[11px] font-semibold uppercase tracking-[0.22em] ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                             Temas frequentes no IRPF {activeTaxYear}
@@ -3124,6 +3146,7 @@ export default function HomePage() {
                           </div>
                         )}
                       </div>
+                      </details>
                     </div>
                   </div>
                 ) : (
@@ -3213,6 +3236,8 @@ export default function HomePage() {
                 }}
                 onKeyDown={handleKeyDown}
                 onSend={() => handleSend()}
+                onRetry={() => handleSend()}
+                onCancel={() => requestAbortControllerRef.current?.abort()}
                 onQuickReply={(reply) =>
                   handleSend(
                     buildGuidedReplyMessage(

@@ -1,6 +1,7 @@
 "use client";
 
-import { Paperclip, SendHorizonal, X } from "lucide-react";
+import { useEffect } from "react";
+import { Paperclip, RefreshCcw, SendHorizonal, X } from "lucide-react";
 
 import { UploadedDocument } from "@/types/chat";
 
@@ -26,6 +27,8 @@ type ChatComposerProps = {
   onChange: (value: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
   onSend: () => void;
+  onRetry?: () => void;
+  onCancel?: () => void;
   onQuickReply?: (reply: string) => void;
   canUploadDocuments?: boolean;
   uploadBlockedMessage?: string;
@@ -57,6 +60,8 @@ export default function ChatComposer({
   onChange,
   onKeyDown,
   onSend,
+  onRetry,
+  onCancel,
   onQuickReply,
   canUploadDocuments = true,
   uploadBlockedMessage = "",
@@ -66,6 +71,13 @@ export default function ChatComposer({
   textareaRef,
 }: ChatComposerProps) {
   const isRateLimited = rateLimitRemainingSeconds > 0;
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 176)}px`;
+  }, [message, textareaRef]);
 
   return (
     <div
@@ -284,9 +296,13 @@ export default function ChatComposer({
           </div>
         )}
 
+        <label htmlFor="chat-message" className="sr-only">
+          Mensagem para o DeclarIA
+        </label>
         <textarea
+          id="chat-message"
           ref={textareaRef}
-          className={`min-h-[96px] w-full resize-none bg-transparent px-1 text-sm leading-6 outline-none transition disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`min-h-[52px] max-h-44 w-full resize-none overflow-y-auto bg-transparent px-1 text-sm leading-6 outline-none transition disabled:cursor-not-allowed disabled:opacity-60 ${
             isDark
               ? "text-white placeholder:text-slate-500"
               : "text-slate-800 placeholder:text-slate-400"
@@ -295,7 +311,7 @@ export default function ChatComposer({
           value={message}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={onKeyDown}
-          rows={4}
+          rows={2}
           maxLength={maxMessageLength}
           disabled={loading || resetting}
         />
@@ -363,23 +379,36 @@ export default function ChatComposer({
             </div>
           </div>
 
-          <button
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-4 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_30px_rgba(16,185,129,0.28)] transition duration-200 hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-50"
-            onClick={onSend}
-            disabled={
-              loading ||
-              resetting ||
-              isRateLimited ||
-              (!message.trim() && uploadedDocuments.length === 0)
-            }
-          >
-            <SendHorizonal size={16} />
-            {loading
-              ? "Enviando..."
-              : isRateLimited
-                ? `Aguarde ${rateLimitRemainingSeconds}s`
-                : "Enviar"}
-          </button>
+          <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+            {loading && onCancel ? (
+              <button
+                type="button"
+                className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border px-5 py-3 text-sm font-semibold transition sm:w-auto ${isDark ? "border-rose-300/20 bg-rose-400/10 text-rose-100 hover:bg-rose-400/20" : "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"}`}
+                onClick={onCancel}
+              >
+                <X size={16} /> Cancelar resposta
+              </button>
+            ) : (
+              <button
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_30px_rgba(16,185,129,0.28)] transition duration-200 hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                onClick={onSend}
+                disabled={
+                  loading ||
+                  resetting ||
+                  isRateLimited ||
+                  (!message.trim() && uploadedDocuments.length === 0)
+                }
+              >
+                <SendHorizonal size={16} />
+                {isRateLimited
+                  ? `Aguarde ${rateLimitRemainingSeconds}s`
+                  : "Enviar"}
+              </button>
+            )}
+            <span className="text-center text-[11px] text-slate-500">
+              Enter envia · Shift+Enter quebra a linha
+            </span>
+          </div>
         </div>
 
         {rateLimitMessage && (
@@ -396,15 +425,39 @@ export default function ChatComposer({
 
         {error && (
           <div
+            role="alert"
             className={`mt-3 rounded-2xl border px-3 py-2 text-sm ${
               isDark
                 ? "border-red-400/20 bg-red-500/10 text-red-200"
                 : "border-red-300 bg-red-50 text-red-700"
             }`}
           >
-            {error}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span>{error}</span>
+              {onRetry ? (
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className="inline-flex items-center gap-2 rounded-xl border border-current/20 px-3 py-1.5 text-xs font-semibold transition hover:bg-white/10"
+                >
+                  <RefreshCcw size={13} />
+                  Tentar novamente
+                </button>
+              ) : null}
+            </div>
           </div>
         )}
+
+        {uploadingDocument ? (
+          <div className="mt-3" role="status" aria-live="polite">
+            <div className={`mb-1 text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+              Enviando e preparando documento…
+            </div>
+            <div className={`h-1.5 overflow-hidden rounded-full ${isDark ? "bg-white/10" : "bg-slate-200"}`}>
+              <div className="h-full w-2/3 animate-pulse rounded-full bg-emerald-400" />
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
