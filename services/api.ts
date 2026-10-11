@@ -33,7 +33,9 @@ import {
   WebSearchResultCreateRequest,
 } from "@/types/chat";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = (
+  process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:8000"
+).replace(/\/+$/, "");
 
 function getCookieValue(name: string) {
   if (typeof document === "undefined") return null;
