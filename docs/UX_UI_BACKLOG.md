@@ -10,7 +10,7 @@ Rastreabilidade do arquivo `DeclarIA_UX_UI_Backlog.json`, recebido em 11 de outu
 | UX-004 | Concluído | Estados de resposta, upload, erro, nova tentativa e cancelamento; ações bloqueadas durante processamento. |
 | UX-005 | Concluído | Histórico pesquisável, filtrável, agrupado por período e recolhível; ações têm rótulos e confirmações existentes. |
 | UX-006 | Concluído no frontend | Fontes são exibidas somente quando retornadas pela API, com link, origem, exercício, datas e indicador de confiança. |
-| UX-007 | Concluído com dados disponíveis | Dashboard mostra próxima ação baseada no uso real, sem percentual inventado. A evolução para etapas documentais depende de um resumo de jornada do backend. |
+| UX-007 | Concluído | Dashboard em formato de centro de comando, com progresso calculado por conta, documentos, fichas, revisão, conferência e prontidão; próxima ação, documentos e conversas usam dados reais da API. |
 | UX-008 | Concluído | Dashboard prioriza tarefa e reduz detalhes técnicos ao resumo de plano; ferramentas administrativas continuam condicionadas às permissões. |
 | UX-009 | Concluído como baseline | Foco global, rótulos, regiões vivas, navegação por teclado, proteção contra overflow e layout responsivo. Auditoria manual com leitor de tela continua no checklist de release. |
 | UX-010 | Concluído | Landing mostra conversa demonstrativa identificada, CTA primário e aviso responsável; atalhos DEV só existem em desenvolvimento. |
@@ -19,7 +19,7 @@ Rastreabilidade do arquivo `DeclarIA_UX_UI_Backlog.json`, recebido em 11 de outu
 ## Dependências do backend
 
 - Fontes, exercício fiscal e confiança nunca são fabricados pelo frontend; aparecem apenas quando presentes no contrato da resposta.
-- Um progresso documental completo exige que o backend exponha etapas consolidadas da jornada. Até isso existir, o dashboard usa somente dados reais de autenticação e uso, sem estimar porcentagens.
+- O dashboard deriva o progresso dos contratos atuais. Se o backend futuramente expuser uma jornada consolidada, esse contrato deverá substituir o cálculo distribuído no frontend.
 
 ## Validação recomendada
 

@@ -1371,7 +1371,9 @@ export default function HomePage() {
       searchParams.get("documentLabel")?.trim() || "";
     const externalUploadId = searchParams.get("uploadId")?.trim() || "";
     const externalConversationId =
-      searchParams.get("conversationId")?.trim() || "";
+      searchParams.get("conversationId")?.trim() ||
+      searchParams.get("conversation")?.trim() ||
+      "";
 
     if (!externalPrompt && !externalConversationId) {
       externalContextAppliedRef.current = true;

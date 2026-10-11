@@ -1,76 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import {
-  FileText,
-  MessagesSquare,
-  Settings2,
-  ShieldCheck,
-  Sparkles,
-  UserCog,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { FileCheck2, ShieldCheck, Sparkles } from "lucide-react";
 
-import {
-  canAccessTechnicalUploads,
-  canManageKnowledgeBase,
-  isPremiumPlan,
-} from "@/lib/access-control";
+import AuthenticatedDashboard from "@/components/dashboard/AuthenticatedDashboard";
 import { devLogin, getAuthStatus, getLoginUrl } from "@/services/api";
-import { AuthUser } from "@/types/chat";
-
-function getRoleLabel(role?: string | null) {
-  if (role === "admin") return "Admin";
-  if (role === "technical") return "Time tecnico";
-  return "Usuario";
-}
-
-function getRoleTone(role?: string | null) {
-  if (role === "admin") {
-    return "border-amber-400/20 bg-amber-500/10 text-amber-100";
-  }
-  if (role === "technical") {
-    return "border-sky-400/20 bg-sky-500/10 text-sky-100";
-  }
-  return "border-emerald-400/20 bg-emerald-500/10 text-emerald-100";
-}
-
-function getPlanLabel(plan?: string | null) {
-  return isPremiumPlan(plan) ? "Premium" : "Free";
-}
-
-function getSubscriptionStatusLabel(status?: string | null) {
-  const normalized = (status || "inactive").toLowerCase();
-  if (normalized === "active") return "Premium ativo";
-  if (normalized === "past_due") return "Pagamento pendente";
-  if (normalized === "canceled") return "Assinatura cancelada";
-  if (normalized === "trialing") return "Periodo de teste";
-  return "Sem assinatura ativa";
-}
-
-function getSubscriptionTone(status?: string | null) {
-  const normalized = (status || "inactive").toLowerCase();
-  if (normalized === "active" || normalized === "trialing") {
-    return "border-emerald-400/20 bg-emerald-500/10 text-emerald-100";
-  }
-  if (normalized === "past_due") {
-    return "border-amber-400/20 bg-amber-500/10 text-amber-100";
-  }
-  if (normalized === "canceled") {
-    return "border-rose-400/20 bg-rose-500/10 text-rose-100";
-  }
-  return "border-white/10 bg-white/[0.04] text-slate-300";
-}
-
-type RoleCard = {
-  title: string;
-  description: string;
-  href: string;
-  cta: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  disabled?: boolean;
-  disabledReason?: string;
-};
+import type { AuthUser } from "@/types/chat";
 
 export default function LandingPage() {
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -80,21 +15,13 @@ export default function LandingPage() {
 
   useEffect(() => {
     let active = true;
-
-    async function checkAuth() {
-      try {
-        const authStatus = await getAuthStatus();
-        if (!active) return;
-        setAuthUser(authStatus.user);
-      } finally {
-        if (active) {
-          setCheckingAuth(false);
-        }
-      }
-    }
-
-    void checkAuth();
-
+    getAuthStatus()
+      .then((status) => {
+        if (active) setAuthUser(status.user);
+      })
+      .finally(() => {
+        if (active) setCheckingAuth(false);
+      });
     return () => {
       active = false;
     };
@@ -107,348 +34,74 @@ export default function LandingPage() {
   async function handleDevLogin(email: string, name: string) {
     try {
       setLoggingInAs(email);
-      const authStatus = await devLogin({ email, name });
-      setAuthUser(authStatus.user);
+      const status = await devLogin({ email, name });
+      setAuthUser(status.user);
     } finally {
       setLoggingInAs(null);
-      setCheckingAuth(false);
     }
   }
 
-  const remainingInteractions = authUser?.usage?.chat_interactions_remaining;
-  const subscriptionStatus = authUser?.subscription?.status;
-  const subscriptionStatusLabel = getSubscriptionStatusLabel(subscriptionStatus);
-  const uploadAllowed =
-    authUser?.usage?.uploads_allowed ??
-    (isPremiumPlan(authUser?.plan) || canAccessTechnicalUploads(authUser?.role));
-
-  const roleCards = useMemo<RoleCard[]>(() => {
-    const cards: RoleCard[] = [
-      {
-        title: "Conversar com a IA",
-        description:
-          "Tire duvidas do IRPF, continue uma triagem guiada ou retome uma conversa salva.",
-        href: "/chat",
-        cta: "Abrir chat",
-        icon: MessagesSquare,
-      },
-      {
-        title: "Minha declaracao",
-        description:
-          "Veja o rascunho estruturado da declaracao com o que ja esta pronto e o que ainda merece revisao.",
-        href: "/declaracao",
-        cta: "Abrir rascunho",
-        icon: FileText,
-      },
-      {
-        title: "Meus documentos",
-        description:
-          "Acompanhe seus arquivos, a ficha principal sugerida e o que ja foi identificado.",
-        href: "/documentos",
-        cta: uploadAllowed ? "Ver meus documentos" : "Disponivel no Premium",
-        icon: FileText,
-        disabled: !uploadAllowed,
-        disabledReason:
-          !uploadAllowed
-            ? "Upload e acompanhamento de documentos ficam liberados no plano Premium."
-            : undefined,
-      },
-    ];
-
-    if (canAccessTechnicalUploads(authUser?.role)) {
-      cards.push({
-        title: "Observabilidade de uploads",
-        description:
-          "Revise OCR, parser, facts, acoes sugeridas e estado das fichas com visao tecnica.",
-        href: "/uploads",
-        cta: "Abrir observabilidade",
-        icon: UserCog,
-      });
-    }
-
-    if (canManageKnowledgeBase(authUser?.role)) {
-      cards.push({
-        title: "Gestao da base ativa",
-        description:
-          "Troque o exercicio ativo do IRPF e valide a base anual usada pelas respostas.",
-        href: "/chat",
-        cta: "Abrir gestao no chat",
-        icon: Settings2,
-      });
-      cards.push({
-        title: "Gerenciar usuarios",
-        description:
-          "Acompanhe contas ativas, ajuste papel e plano e cadastre novos usuarios.",
-        href: "/admin/users",
-        cta: "Abrir painel admin",
-        icon: ShieldCheck,
-      });
-      cards.push({
-        title: "Painel de billing",
-        description:
-          "Veja provider, checkout, webhook e o panorama comercial atual da assinatura.",
-        href: "/admin/billing",
-        cta: "Abrir billing",
-        icon: Sparkles,
-      });
-      cards.push({
-        title: "Auditoria de seguranca",
-        description:
-          "Acompanhe eventos sensiveis, trocas de provider, acoes admin e fluxos locais de teste.",
-        href: "/admin/audit",
-        cta: "Abrir auditoria",
-        icon: ShieldCheck,
-      });
-    }
-
-    if (!isPremiumPlan(authUser?.plan)) {
-      cards.push({
-        title: "Upgrade de plano",
-        description:
-          "Libere upload de documentos e conversas sem limite ao migrar para o plano Premium.",
-        href: "/upgrade",
-        cta: "Conhecer Premium",
-        icon: Sparkles,
-      });
-    }
-
-    return cards;
-  }, [authUser?.plan, authUser?.role, uploadAllowed]);
-
   if (checkingAuth) {
     return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.16),_transparent_24%),linear-gradient(180deg,_#020617_0%,_#0f172a_55%,_#020617_100%)] text-slate-100">
-        <section className="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-12 lg:px-10">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] px-6 py-5 text-sm text-slate-300 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl">
-            Validando sessao...
-          </div>
-        </section>
+      <main className="grid min-h-screen place-items-center bg-[#07101f] text-slate-100">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 text-sm text-slate-300" role="status">
+          Validando sessão…
+        </div>
       </main>
     );
   }
 
-  if (!authUser) {
-    return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.16),_transparent_24%),linear-gradient(180deg,_#020617_0%,_#0f172a_55%,_#020617_100%)] text-slate-100">
-        <section className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-12 lg:px-10">
-          <div className="grid w-full gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-200/90">
-                  DeclarIA
-                </div>
-                <div className="inline-flex rounded-full border border-sky-400/20 bg-sky-500/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-100">
-                  Login seguro
-                </div>
-              </div>
+  if (authUser) {
+    return <AuthenticatedDashboard user={authUser} />;
+  }
 
-              <div className="space-y-4">
-                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white lg:text-6xl">
-                  Seu copiloto para duvidas, triagem e historico de imposto de renda.
-                </h1>
-                <p className="max-w-2xl text-base leading-7 text-slate-300 lg:text-lg">
-                  Entre para conversar com a IA, acompanhar seus documentos e destravar um fluxo mais guiado de declaracao.
-                </p>
-              </div>
+  return (
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(14,165,233,0.16),transparent_24%),linear-gradient(180deg,#020617_0%,#0f172a_55%,#020617_100%)] text-slate-100">
+      <section className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-5 py-10 sm:px-8 lg:px-10">
+        <div className="grid w-full gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
+              <FileCheck2 size={15} /> DeclarIA
+            </div>
+            <h1 className="mt-6 max-w-3xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Sua declaração organizada, do primeiro documento à revisão final.
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 lg:text-lg">
+              Um copiloto para tirar dúvidas, organizar documentos e acompanhar cada etapa do seu Imposto de Renda.
+            </p>
+            <button type="button" onClick={handleLogin} className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-[0_16px_40px_rgba(16,185,129,0.25)] hover:bg-emerald-300">
+              <ShieldCheck size={18} /> Entrar com Authentik
+            </button>
 
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={handleLogin}
-                  disabled={checkingAuth}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-[0_16px_40px_rgba(16,185,129,0.28)] transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <ShieldCheck size={18} />
-                  Entrar com Authentik
-                </button>
-                <a
-                  href="/chat"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-white transition hover:bg-white/[0.08]"
-                >
-                  Ja estou autenticado
-                </a>
-              </div>
-
-              {showDevelopmentAccess ? (
-              <div className="rounded-[1.5rem] border border-amber-300/20 bg-amber-500/10 p-4">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-amber-100/90">
-                  Acesso local de desenvolvimento
-                </div>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-amber-50/90">
-                  Use estes atalhos para testar rapidamente os perfis locais sem passar pelo login externo.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
+            {showDevelopmentAccess ? (
+              <div className="mt-6 rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-100">Acesso local de desenvolvimento</div>
+                <div className="mt-3 flex flex-wrap gap-2">
                   {[
-                    {
-                      email: "usuario.free@declaria.local",
-                      name: "Usuario Free",
-                      label: "Entrar como Free",
-                    },
-                    {
-                      email: "tecnico@declaria.local",
-                      name: "Time Tecnico",
-                      label: "Entrar como Tecnico",
-                    },
-                    {
-                      email: "admin@declaria.local",
-                      name: "Administrador",
-                      label: "Entrar como Admin",
-                    },
-                  ].map((account) => (
-                    <button
-                      key={account.email}
-                      type="button"
-                      onClick={() => handleDevLogin(account.email, account.name)}
-                      disabled={loggingInAs !== null}
-                      className="inline-flex rounded-full border border-amber-200/20 bg-white/[0.08] px-3 py-1.5 text-xs font-medium text-amber-50 transition hover:-translate-y-0.5 hover:bg-white/[0.14] disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {loggingInAs === account.email ? "Entrando..." : account.label}
+                    ["usuario.free@declaria.local", "Usuario Free", "Free"],
+                    ["tecnico@declaria.local", "Time Tecnico", "Técnico"],
+                    ["admin@declaria.local", "Administrador", "Admin"],
+                  ].map(([email, name, label]) => (
+                    <button key={email} type="button" onClick={() => handleDevLogin(email, name)} disabled={loggingInAs !== null} className="rounded-full border border-amber-200/20 bg-white/[0.08] px-3 py-1.5 text-xs text-amber-50 hover:bg-white/[0.14] disabled:opacity-50">
+                      {loggingInAs === email ? "Entrando…" : `Entrar como ${label}`}
                     </button>
                   ))}
                 </div>
               </div>
-              ) : null}
-            </div>
-
-            <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl">
-              <div className="flex items-center gap-3 text-emerald-200">
-                <Sparkles size={18} />
-                <span className="text-sm font-medium">Prévia demonstrativa do copiloto</span>
-              </div>
-
-              <div className="mt-6 space-y-4">
-                <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-emerald-400 px-4 py-3 text-sm leading-6 text-slate-950">
-                  Recebi um informe de rendimentos. Qual é o próximo passo?
-                </div>
-                <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-white/10 bg-slate-950/55 p-4">
-                  <div className="text-sm font-semibold text-white">DeclarIA</div>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Vamos identificar o documento, conferir o ano-calendário e organizar os campos que precisam de revisão antes da declaração.
-                  </p>
-                  <div className="mt-3 inline-flex rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-100">
-                    Próxima ação: enviar o informe
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-sky-300/15 bg-sky-400/10 px-4 py-3 text-xs leading-5 text-sky-100">
-                  Exemplo ilustrativo. O DeclarIA sinaliza incertezas e mostra as fontes disponíveis; confirme os dados antes do uso fiscal.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.10),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.10),_transparent_24%),linear-gradient(180deg,_#020617_0%,_#0f172a_55%,_#020617_100%)] text-slate-100">
-      <section className="mx-auto flex min-h-screen w-full max-w-6xl px-6 py-10 lg:px-10">
-        <div className="w-full space-y-8">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl lg:p-8">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-200/90">
-                DeclarIA
-              </div>
-              <div
-                className={`inline-flex rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] ${getRoleTone(
-                  authUser.role
-                )}`}
-              >
-                {getRoleLabel(authUser.role)}
-              </div>
-              <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-200">
-                Plano {getPlanLabel(authUser.plan)}
-              </div>
-              <div
-                className={`inline-flex rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] ${getSubscriptionTone(
-                  subscriptionStatus
-                )}`}
-              >
-                {subscriptionStatusLabel}
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-              <div>
-                <h1 className="text-4xl font-semibold tracking-tight text-white lg:text-5xl">
-                  Bem-vindo de volta, {authUser.name?.split(" ")[0] || "voce"}.
-                </h1>
-                <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300 lg:text-lg">
-                  Continue sua jornada da declaração a partir da próxima ação útil para sua conta.
-                </p>
-              </div>
-              <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/35 p-4">
-                <div className="flex items-center gap-2 text-emerald-200">
-                  <Sparkles size={16} />
-                  <span className="text-sm font-medium">Próxima ação recomendada</span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
-                  {authUser.usage?.chat_interactions_used
-                    ? "Retome sua conversa e avance nos pontos ainda pendentes."
-                    : "Comece com uma dúvida ou uma triagem curta para organizar seu caso."}
-                </p>
-                <Link href="/chat" className="mt-4 inline-flex rounded-xl bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:brightness-110">
-                  {authUser.usage?.chat_interactions_used ? "Retomar jornada" : "Começar agora"}
-                </Link>
-                <div className="mt-4 border-t border-white/10 pt-3 text-xs text-slate-400">
-                  Plano {getPlanLabel(authUser.plan)} · {remainingInteractions == null ? "chat sem limite configurado" : `${remainingInteractions} interações restantes`}
-                </div>
-                {subscriptionStatus === "past_due" ? (
-                  <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-500/10 px-3 py-3 text-sm leading-6 text-amber-100">
-                    Seu pagamento esta pendente. Abra a area de upgrade para regularizar a assinatura.
-                  </div>
-                ) : null}
-                {subscriptionStatus === "canceled" ? (
-                  <div className="mt-4 rounded-2xl border border-rose-300/20 bg-rose-500/10 px-3 py-3 text-sm leading-6 text-rose-100">
-                    Sua assinatura foi cancelada. Se quiser voltar a usar documentos e conversas estendidas, faca um novo upgrade.
-                  </div>
-                ) : null}
-              </div>
-            </div>
+            ) : null}
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-            {roleCards.map((card) => {
-              const Icon = card.icon;
-              const cardContent = (
-                <>
-                  <div className="inline-flex rounded-2xl border border-white/10 bg-slate-950/35 p-3 text-emerald-200">
-                    <Icon size={20} />
-                  </div>
-                  <div className="mt-4 text-lg font-semibold text-white">{card.title}</div>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">{card.description}</p>
-                  {card.disabledReason ? (
-                    <div className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
-                      {card.disabledReason}
-                    </div>
-                  ) : null}
-                  <div className="mt-5 text-sm font-medium text-emerald-200 transition group-hover:text-emerald-100">
-                    {card.cta}
-                  </div>
-                </>
-              );
-
-              if (card.disabled) {
-                return (
-                  <div
-                    key={card.href}
-                    className="group rounded-[1.6rem] border border-white/10 bg-white/[0.03] p-5 opacity-80 shadow-[0_24px_60px_rgba(2,6,23,0.14)] backdrop-blur-xl"
-                  >
-                    {cardContent}
-                  </div>
-                );
-              }
-
-              return (
-                <Link
-                  key={card.href}
-                  href={card.href}
-                  className="group rounded-[1.6rem] border border-white/10 bg-white/[0.045] p-5 shadow-[0_24px_60px_rgba(2,6,23,0.14)] backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/[0.06]"
-                >
-                  {cardContent}
-                </Link>
-              );
-            })}
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl">
+            <div className="flex items-center gap-2 text-sm font-medium text-emerald-200"><Sparkles size={18} /> Prévia demonstrativa</div>
+            <div className="mt-6 space-y-4">
+              <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-emerald-400 px-4 py-3 text-sm leading-6 text-slate-950">Recebi um informe de rendimentos. Qual é o próximo passo?</div>
+              <div className="max-w-[92%] rounded-2xl rounded-bl-md border border-white/10 bg-slate-950/55 p-4">
+                <div className="text-sm font-semibold text-white">DeclarIA</div>
+                <p className="mt-2 text-sm leading-6 text-slate-300">Vamos identificar o documento, conferir o ano-calendário e organizar os campos que precisam de revisão.</p>
+                <div className="mt-3 inline-flex rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-100">Próxima ação: enviar o informe</div>
+              </div>
+              <div className="rounded-2xl border border-sky-300/15 bg-sky-400/10 px-4 py-3 text-xs leading-5 text-sky-100">Exemplo ilustrativo. Confirme os dados e fontes antes do uso fiscal.</div>
+            </div>
           </div>
         </div>
       </section>
