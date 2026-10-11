@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ShieldCheck, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
+import { canAccessAdmin } from "@/lib/access-control";
 import {
   createAdminUser,
   getAuthStatus,
@@ -28,10 +29,6 @@ const PLAN_OPTIONS = [
   { value: "free", label: "Free" },
   { value: "premium", label: "Premium" },
 ];
-
-function canAccessAdmin(role?: string | null) {
-  return role === "admin";
-}
 
 type AdminUserFilter = "all" | "free_near_limit" | "free_at_limit" | "premium" | "inactive";
 

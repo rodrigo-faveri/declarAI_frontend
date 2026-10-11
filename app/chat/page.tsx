@@ -12,6 +12,11 @@ import ProfileMenu from "@/components/chat/ProfileMenu";
 import SidebarPanels from "@/components/chat/SidebarPanels";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import {
+  canAccessTechnicalUploads,
+  canManageKnowledgeBase,
+  canUploadDocumentsForUser,
+} from "@/lib/access-control";
+import {
   ApiError,
   devLogin,
   deleteConversation,
@@ -466,23 +471,6 @@ function getUserInitials(profileDetails: ProfileDetails, authName?: string | nul
   }
 
   return base.slice(0, 2).toUpperCase();
-}
-
-function canAccessTechnicalUploads(role?: string | null) {
-  return role === "technical" || role === "admin";
-}
-
-function canManageKnowledgeBase(role?: string | null) {
-  return role === "admin";
-}
-
-function canUploadDocumentsForUser(user?: AuthUser | null) {
-  if (!user) return false;
-  return (
-    user.plan === "premium" ||
-    user.role === "technical" ||
-    user.role === "admin"
-  );
 }
 
 function formatTime(date: Date) {

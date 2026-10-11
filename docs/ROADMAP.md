@@ -51,8 +51,8 @@ Objetivo: proteger integrações e regras que têm maior impacto no usuário.
 
 - [x] Configurar framework de testes unitários e de componentes.
 - [x] Testar `apiFetch`, CSRF, erros HTTP, falha de rede e `Retry-After`.
-- [ ] Criar fixtures tipadas para autenticação, chat, upload e declaração.
-- [ ] Testar permissões e limites por papel/plano na navegação.
+- [ ] Criar fixtures tipadas para autenticação, chat, upload e declaração. (autenticação concluída)
+- [x] Testar as regras compartilhadas de permissão e limites por papel/plano.
 - [ ] Configurar testes E2E para login, chat básico e upload.
 - [ ] Definir estratégia de mock/ambiente de teste do backend.
 - [ ] Publicar relatório de cobertura como sinal, sem meta artificial inicial.

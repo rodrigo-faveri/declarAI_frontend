@@ -5,12 +5,9 @@ import { useEffect, useState } from "react";
 import { CreditCard, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { canAccessAdmin } from "@/lib/access-control";
 import { getAuthStatus, getBillingAdminSummary, updateBillingProvider } from "@/services/api";
 import { AuthUser, BillingAdminSummary } from "@/types/chat";
-
-function canAccessAdmin(role?: string | null) {
-  return role === "admin";
-}
 
 function formatProviderLabel(provider?: string | null) {
   if ((provider || "").toLowerCase() === "stripe") return "Stripe";

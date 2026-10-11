@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { useTheme } from "@/components/theme/ThemeProvider";
+import { isPremiumPlan as checkPremiumPlan } from "@/lib/access-control";
 import { ApiError, getAuthStatus, getMyUploadDetail, listMyUploads } from "@/services/api";
 import { AuthUser, UploadRecordDetail, UploadRecordSummary } from "@/types/chat";
 
@@ -285,7 +286,7 @@ export default function MyDocumentsPage() {
     });
     return map;
   }, [detail?.facts]);
-  const isPremiumPlan = authUser?.plan === "premium";
+  const isPremiumPlan = checkPremiumPlan(authUser?.plan);
   const uploadsAllowed = Boolean(authUser?.usage?.uploads_allowed ?? isPremiumPlan);
 
   if (authLoading) {
