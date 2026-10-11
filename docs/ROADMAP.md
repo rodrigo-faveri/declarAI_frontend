@@ -39,7 +39,8 @@ Objetivo: tornar o projeto configurável e verificável em todos os ambientes.
 - [ ] Mapear URLs, cookies, CORS e callbacks por ambiente junto ao backend.
 - [ ] Criar workflow de CI com `npm ci`, lint e build.
 - [ ] Adicionar template de pull request e responsáveis por revisão.
-- [ ] Definir estratégia de preview/staging e variáveis da plataforma de deploy.
+- [x] Documentar a arquitetura-base, o container e o contrato de configuração para deploy.
+- [ ] Escolher a plataforma e configurar preview/staging com variáveis reais.
 
 Critério de aceite: o mesmo código gera builds para local, preview e produção; PRs não podem ser integrados com lint ou build quebrados.
 

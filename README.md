@@ -20,6 +20,8 @@ O produto já possui uma base funcional com:
 
 O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md), e os achados da revisão técnica estão em [docs/TECHNICAL_REVIEW.md](docs/TECHNICAL_REVIEW.md).
 
+A arquitetura e o checklist de publicação estão em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Tecnologias
 
 - Next.js 16 com App Router e Turbopack
