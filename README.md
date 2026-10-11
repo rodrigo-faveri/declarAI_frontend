@@ -133,6 +133,7 @@ docker compose -f C:\authentik\compose.yml down
 | --- | --- | --- |
 | `/` | Todos | Entrada, autenticação e atalhos conforme papel/plano |
 | `/chat` | Usuário autenticado | Conversas, triagem, fontes e gestão da base ativa |
+| `/historico` | Usuário autenticado | Busca e retomada de todas as conversas anteriores |
 | `/documentos` | Premium, técnico e admin | Documentos do usuário e pendências identificadas |
 | `/declaracao` | Usuário autenticado | Rascunho, revisão de fichas e exportação |
 | `/upgrade` | Plano Free | Comparação de planos e início do checkout |

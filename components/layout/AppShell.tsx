@@ -24,6 +24,7 @@ import type { AuthUser } from "@/types/chat";
 export type AppSection =
   | "home"
   | "chat"
+  | "history"
   | "declaration"
   | "documents"
   | "uploads"
@@ -43,7 +44,7 @@ const primaryNavigation = [
   { section: "chat" as const, label: "Chat", href: "/chat", icon: MessageSquare },
   { section: "declaration" as const, label: "Minha declaração", href: "/declaracao", icon: FileCheck2 },
   { section: "documents" as const, label: "Documentos", href: "/documentos", icon: FileText },
-  { section: "chat" as const, label: "Histórico", href: "/chat", icon: Clock3 },
+  { section: "history" as const, label: "Histórico", href: "/historico", icon: Clock3 },
 ];
 
 function Brand({ compact = false }: { compact?: boolean }) {
@@ -101,7 +102,7 @@ export function AppShell({
           <nav aria-label="Navegação principal" className="space-y-1.5 p-3">
             {primaryNavigation.map((item) => {
               const Icon = item.icon;
-              const active = item.section === activeSection && item.label !== "Histórico";
+              const active = item.section === activeSection;
               return (
                 <Link key={item.label} href={item.href} aria-current={active ? "page" : undefined} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${active ? activeTone : inactiveTone}`}>
                   <Icon size={17} /> {item.label}
@@ -146,7 +147,7 @@ export function AppShell({
           </header>
 
           <nav aria-label="Navegação móvel" className={`sticky top-20 z-20 flex gap-1 overflow-x-auto border-b px-3 py-2 lg:hidden ${headerTone}`}>
-            {primaryNavigation.slice(0, 4).map((item) => {
+            {primaryNavigation.map((item) => {
               const Icon = item.icon;
               const active = item.section === activeSection;
               return <Link key={item.label} href={item.href} aria-current={active ? "page" : undefined} className={`flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium ${active ? activeTone : inactiveTone}`}><Icon size={15} /> {item.label}</Link>;
@@ -169,7 +170,7 @@ export function FocusModeNavigation({ activeSection = "chat" }: { activeSection?
     <nav aria-label="Navegação do aplicativo" className={`mb-3 flex items-center justify-between gap-3 rounded-2xl border px-3 py-2 ${isDark ? "border-white/10 bg-[#091526]" : "border-slate-200 bg-white"}`}>
       <Brand compact />
       <div className="flex items-center gap-1 overflow-x-auto">
-        {primaryNavigation.slice(0, 4).map((item) => {
+        {primaryNavigation.map((item) => {
           const Icon = item.icon;
           const active = item.section === activeSection;
           return <Link key={item.label} href={item.href} aria-current={active ? "page" : undefined} title={item.label} className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl transition ${active ? "bg-emerald-400/15 text-emerald-400" : isDark ? "text-slate-400 hover:bg-white/5 hover:text-white" : "text-slate-500 hover:bg-slate-100"}`}><Icon size={17} /><span className="sr-only">{item.label}</span></Link>;

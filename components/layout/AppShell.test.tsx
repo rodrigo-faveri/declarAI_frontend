@@ -77,6 +77,7 @@ describe("AppShell", () => {
     expect(screen.queryByText("authentik Default Admin")).toBeNull();
     expect(screen.getByText("Base IRPF 2026")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Administração" })).toBeTruthy();
+    expect(screen.getAllByRole("link", { name: "Histórico" })[0]?.getAttribute("href")).toBe("/historico");
   });
 
   it("oferece navegação compartilhada no modo foco do chat", () => {
