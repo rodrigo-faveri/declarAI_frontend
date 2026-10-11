@@ -35,6 +35,7 @@ docs: documenta ambiente local
 
 - [ ] O escopo está pequeno e descrito com clareza.
 - [ ] `npm run lint` passou.
+- [ ] `npm run typecheck` passou.
 - [ ] `npm run build` passou.
 - [ ] Fluxos alterados foram validados manualmente com o backend.
 - [ ] Contratos modificados estão alinhados com o repositório do backend.

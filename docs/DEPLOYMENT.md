@@ -103,6 +103,7 @@ Use o gerenciador de secrets da plataforma e injete esses valores somente nos se
 ```text
 Pull request
    -> npm ci
+   -> npm audit --omit=dev --audit-level=high
    -> npm run lint
    -> npm run build
    -> testes automatizados

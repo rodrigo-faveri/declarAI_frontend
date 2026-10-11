@@ -94,6 +94,7 @@ NEXT_PUBLIC_API_URL=https://api.exemplo.com
 | `npm run build` | Gera a build otimizada de produção e valida o TypeScript |
 | `npm run start` | Executa a build de produção |
 | `npm run lint` | Executa as regras de lint do projeto |
+| `npm run typecheck` | Valida os tipos TypeScript sem gerar arquivos |
 
 ### Configuração do Authentik local
 
@@ -182,6 +183,7 @@ Antes de integrar qualquer mudança:
 
 ```bash
 npm run lint
+npm run typecheck
 npm run build
 ```
 
