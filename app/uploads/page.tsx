@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { useTheme } from "@/components/theme/ThemeProvider";
+import { canAccessTechnicalUploads } from "@/lib/access-control";
 import { getAuthStatus, getUploadDetail, getUploadInsights, listUploads } from "@/services/api";
 import {
   AuthUser,
@@ -235,10 +236,6 @@ function getReviewTone(needsReview: boolean, isDark: boolean) {
     : isDark
       ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-100"
       : "border-emerald-200 bg-emerald-50 text-emerald-700";
-}
-
-function canAccessTechnicalUploads(role?: string | null) {
-  return role === "technical" || role === "admin";
 }
 
 function SectionCard({

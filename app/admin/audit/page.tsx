@@ -5,12 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Search, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { canAccessAdmin } from "@/lib/access-control";
 import { getAuthStatus, listAdminAuditEvents } from "@/services/api";
 import { AdminAuditEventRecord, AdminAuditListResponse, AuthUser } from "@/types/chat";
-
-function canAccessAdmin(role?: string | null) {
-  return role === "admin";
-}
 
 function formatEventDate(value?: string | null) {
   if (!value) return "Agora";

@@ -11,20 +11,13 @@ import {
   UserCog,
 } from "lucide-react";
 
+import {
+  canAccessTechnicalUploads,
+  canManageKnowledgeBase,
+  isPremiumPlan,
+} from "@/lib/access-control";
 import { devLogin, getAuthStatus, getLoginUrl } from "@/services/api";
 import { AuthUser } from "@/types/chat";
-
-function canAccessTechnicalUploads(role?: string | null) {
-  return role === "technical" || role === "admin";
-}
-
-function canManageKnowledgeBase(role?: string | null) {
-  return role === "admin";
-}
-
-function isPremiumPlan(plan?: string | null) {
-  return plan === "premium";
-}
 
 function getRoleLabel(role?: string | null) {
   if (role === "admin") return "Admin";
