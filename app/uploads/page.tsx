@@ -523,13 +523,14 @@ export default function UploadsPage() {
       return;
     }
 
+    const uploadId = selectedId;
     let active = true;
 
     async function loadDetail() {
       setLoadingDetail(true);
       setError(null);
       try {
-        const response = await getUploadDetail(selectedId);
+        const response = await getUploadDetail(uploadId);
         if (!active) return;
         setDetail(response);
       } catch (loadError) {

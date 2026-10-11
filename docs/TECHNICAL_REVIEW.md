@@ -4,7 +4,7 @@ Revisão inicial realizada em 11 de outubro de 2026, considerando a estrutura do
 
 ## Resumo executivo
 
-O frontend já cobre o fluxo principal do produto e integra várias áreas de domínio. O lint passa e o código transpila, mas a build falha na checagem de tipos. A base ainda tem características de protótipo evoluído: configuração local fixa, componentes de página muito extensos, ausência de testes automatizados e falta de CI. A prioridade recomendada é estabilizar a fundação antes de ampliar o escopo funcional.
+O frontend já cobre o fluxo principal do produto e integra várias áreas de domínio. Lint, TypeScript e build de produção passam após a correção dos contratos e dos limites de `Suspense`. A base ainda tem características de protótipo evoluído: configuração local fixa, componentes de página muito extensos, ausência de testes automatizados e falta de CI. A prioridade recomendada é continuar estabilizando a fundação antes de ampliar o escopo funcional.
 
 ## Pontos positivos
 
@@ -20,11 +20,11 @@ O frontend já cobre o fluxo principal do produto e integra várias áreas de do
 
 ### Alta prioridade
 
-#### 1. Contrato de billing inconsistente
+#### 1. Contrato de billing inconsistente — resolvido
 
-A build falha porque `app/admin/billing/page.tsx` acessa `provider_checkout_ready`, que não existe no tipo `BillingAdminSummary`. Pode haver outros erros de tipos encobertos por essa primeira falha.
+A build falhava porque `app/admin/billing/page.tsx` acessava campos retornados pelo backend que não existiam no tipo `BillingAdminSummary`. O contrato foi alinhado e as demais inconsistências TypeScript encontradas pela build também foram corrigidas.
 
-Recomendação: alinhar o contrato com a resposta real do backend e executar a build novamente até que toda a checagem TypeScript seja aprovada.
+Validação: a checagem TypeScript e a geração das páginas de produção foram aprovadas.
 
 #### 2. URL da API fixa no código
 
@@ -95,16 +95,15 @@ Recomendação: incluir axe/Lighthouse e revisar teclado, nomes acessíveis, con
 | Check | Resultado |
 | --- | --- |
 | `npm run lint` | Aprovado |
-| `npm run build` | Reprovado na checagem TypeScript: `BillingAdminSummary.provider_checkout_ready` ausente |
+| `npm run build` | Aprovado, incluindo TypeScript e geração das páginas estáticas |
 | Testes automatizados | Não disponíveis no projeto |
 
 ## Ordem recomendada
 
-1. Corrigir o contrato de billing e obter uma build verde.
-2. Configuração por ambiente e CI.
-3. Testes da camada HTTP e dos fluxos críticos.
-4. Decomposição incremental dos hotspots.
-5. Endurecimento de autenticação, autorização e tratamento de erros.
-6. Acessibilidade, desempenho e observabilidade.
+1. Configuração por ambiente e CI.
+2. Testes da camada HTTP e dos fluxos críticos.
+3. Decomposição incremental dos hotspots.
+4. Endurecimento de autenticação, autorização e tratamento de erros.
+5. Acessibilidade, desempenho e observabilidade.
 
 Os itens foram convertidos em sprints acionáveis em [ROADMAP.md](ROADMAP.md).
