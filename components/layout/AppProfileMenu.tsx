@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import ProfileMenu from "@/components/chat/ProfileMenu";
-import { canManageKnowledgeBase } from "@/lib/access-control";
+import { canManageKnowledgeBase, isPremiumPlan } from "@/lib/access-control";
 import {
   getKnowledgeBaseSettings,
   getUserProfile,
@@ -187,25 +187,40 @@ export default function AppProfileMenu({ user, isDark, taxYear }: AppProfileMenu
     }
   }
 
+  const profileDisplayName =
+    `${profileDetails.firstName} ${profileDetails.lastName}`.trim() ||
+    user.name ||
+    user.email;
+
   return (
-    <ProfileMenu
-      email={user.email}
-      name={user.name}
-      provider={user.provider}
-      role={user.role}
-      plan={user.plan}
-      usage={user.usage}
-      isDark={isDark}
-      profileDetails={profileDetails}
-      preferences={preferences}
-      activeTaxYear={activeTaxYear}
-      availableTaxYears={availableTaxYears}
-      canManageKnowledgeBase={canChangeKnowledgeBase}
-      knowledgeBaseSettingsLoading={settingsLoading}
-      onChangeActiveTaxYear={handleTaxYearChange}
-      onUpdateProfileDetails={(updates) => setProfileDetails((current) => ({ ...current, ...updates }))}
-      onUpdatePreferences={(updates) => setPreferences((current) => ({ ...current, ...updates }))}
-      onLogout={handleLogout}
-    />
+    <div className="flex min-w-0 items-center gap-3">
+      <ProfileMenu
+        email={user.email}
+        name={profileDisplayName}
+        provider={user.provider}
+        role={user.role}
+        plan={user.plan}
+        usage={user.usage}
+        isDark={isDark}
+        profileDetails={profileDetails}
+        preferences={preferences}
+        activeTaxYear={activeTaxYear}
+        availableTaxYears={availableTaxYears}
+        canManageKnowledgeBase={canChangeKnowledgeBase}
+        knowledgeBaseSettingsLoading={settingsLoading}
+        onChangeActiveTaxYear={handleTaxYearChange}
+        onUpdateProfileDetails={(updates) => setProfileDetails((current) => ({ ...current, ...updates }))}
+        onUpdatePreferences={(updates) => setPreferences((current) => ({ ...current, ...updates }))}
+        onLogout={handleLogout}
+      />
+      <div className="hidden min-w-0 sm:block">
+        <div className={`max-w-48 truncate text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>
+          {profileDisplayName}
+        </div>
+        <div className="text-[11px] text-emerald-500">
+          Plano {isPremiumPlan(user.plan) ? "Premium" : "Free"}
+        </div>
+      </div>
+    </div>
   );
 }

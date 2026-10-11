@@ -9,10 +9,40 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
 }));
 
+vi.mock("@/services/api", () => ({
+  getAuthStatus: vi.fn().mockResolvedValue({ authenticated: true, user: null }),
+  getKnowledgeBaseSettings: vi.fn().mockResolvedValue({
+    active_tax_year: "2026",
+    available_tax_years: ["2026"],
+  }),
+  getUserProfile: vi.fn().mockResolvedValue({
+    email: "rodrigo@example.com",
+    name: "authentik Default Admin",
+    provider: "authentik",
+    role: "admin",
+    plan: "premium",
+    is_active: true,
+    first_name: "Rodrigo",
+    last_name: "Faveri",
+    phone: "",
+    city: "",
+    tax_profile_note: "",
+    avatar_data_url: "",
+    preferences: {
+      show_history_badges: true,
+      show_triage_insights: true,
+      history_card_density: "comfortable",
+    },
+  }),
+  logout: vi.fn().mockResolvedValue(undefined),
+  updateKnowledgeBaseSettings: vi.fn(),
+  updateUserProfile: vi.fn().mockResolvedValue({}),
+}));
+
 const user: AuthUser = {
   id: "user-1",
   email: "rodrigo@example.com",
-  name: "Rodrigo Faveri",
+  name: "authentik Default Admin",
   provider: "authentik",
   role: "admin",
   plan: "premium",
@@ -34,7 +64,7 @@ function renderWithTheme(element: React.ReactNode) {
 }
 
 describe("AppShell", () => {
-  it("mantém a navegação, a conta e o conteúdo no mesmo layout", () => {
+  it("usa fora do avatar o mesmo nome configurado no perfil", async () => {
     renderWithTheme(
       <AppShell activeSection="documents" user={user} taxYear={2026}>
         <h1>Meus documentos</h1>
@@ -43,7 +73,8 @@ describe("AppShell", () => {
 
     expect(screen.getByRole("heading", { name: "Meus documentos" })).toBeTruthy();
     expect(screen.getAllByRole("link", { name: "Documentos" }).length).toBeGreaterThan(0);
-    expect(screen.getByText("Rodrigo Faveri")).toBeTruthy();
+    expect(await screen.findByText("Rodrigo Faveri")).toBeTruthy();
+    expect(screen.queryByText("authentik Default Admin")).toBeNull();
     expect(screen.getByText("Base IRPF 2026")).toBeTruthy();
     expect(screen.getByRole("link", { name: "Administração" })).toBeTruthy();
   });

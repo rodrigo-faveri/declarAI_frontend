@@ -157,7 +157,6 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
   }, [data.uploads]);
 
   const taxYear = data.draft?.tax_year;
-  const firstName = user.name?.trim().split(/\s+/)[0] || "Olá";
   const uploadAllowed = user.usage?.uploads_allowed ?? (isPremiumPlan(user.plan) || canAccessTechnicalUploads(user.role));
   const quickActions = [
     { label: "Conversar com a IA", description: "Tire dúvidas sobre o IRPF", href: "/chat", icon: MessageSquare, tone: "emerald" },
@@ -171,7 +170,7 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
       <div className="space-y-4">
               <section className="grid overflow-hidden rounded-2xl border border-white/8 bg-[#0d1a2d] lg:grid-cols-[1.08fr_0.92fr]">
                 <div className="p-6 sm:p-8 xl:p-10">
-                  <p className="text-sm text-slate-400">Olá, {firstName} 👋</p>
+                  <p className="text-sm text-slate-400">Olá 👋</p>
                   <h1 className="mt-2 max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl xl:text-5xl">Vamos cuidar da sua declaração {taxYear ? `do IRPF ${taxYear}` : "de IRPF"}?</h1>
                   <p className="mt-4 max-w-xl text-sm leading-6 text-slate-400 sm:text-base">Tire dúvidas, organize seus documentos e acompanhe o progresso da sua declaração com ajuda da IA.</p>
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row">

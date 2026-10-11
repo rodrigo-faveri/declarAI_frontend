@@ -57,15 +57,6 @@ function Brand({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function AccountLabel({ user, isDark }: { user: AuthUser; isDark: boolean }) {
-  return (
-    <div className="hidden min-w-0 sm:block">
-      <div className={`max-w-48 truncate text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>{user.name || user.email}</div>
-      <div className="text-[11px] text-emerald-500">Plano {isPremiumPlan(user.plan) ? "Premium" : "Free"}</div>
-    </div>
-  );
-}
-
 export function AppShell({
   activeSection,
   children,
@@ -149,10 +140,7 @@ export function AppShell({
             <div className="hidden lg:block" />
             <div className="flex items-center gap-2 sm:gap-3">
               {effectiveUser ? (
-                <>
-                  <AppProfileMenu user={effectiveUser} isDark={isDark} taxYear={taxYear} />
-                  <AccountLabel user={effectiveUser} isDark={isDark} />
-                </>
+                <AppProfileMenu user={effectiveUser} isDark={isDark} taxYear={taxYear} />
               ) : null}
             </div>
           </header>
