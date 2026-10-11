@@ -188,7 +188,7 @@ export default function MobileDrawer({
     });
   }, [historyFilter, historyItems, historyQuery]);
 
-  const groupedHistoryItems = useMemo(() => {
+  const groupedHistoryItems = useMemo<Array<[string, HistoryItem[]]>>(() => {
     const groups = new Map<string, HistoryItem[]>();
 
     filteredHistoryItems.forEach((item) => {
@@ -198,9 +198,8 @@ export default function MobileDrawer({
       groups.set(label, existing);
     });
 
-    return Array.from(groups.entries()).map(([label, items]) => [
-      label,
-      [...items].sort((a, b) => {
+    return Array.from(groups.entries()).map(([label, items]) => {
+      const sortedItems = [...items].sort((a, b) => {
         const timeDelta = b.updatedAt - a.updatedAt;
         const withinSameWindow = Math.abs(timeDelta) < 1000 * 60 * 60 * 18;
 
@@ -210,8 +209,9 @@ export default function MobileDrawer({
         }
 
         return timeDelta;
-      }),
-    ]);
+      });
+      return [label, sortedItems];
+    });
   }, [filteredHistoryItems]);
   const isCompactHistory = historyCardDensity === "compact";
   const historyCardClassName = isCompactHistory

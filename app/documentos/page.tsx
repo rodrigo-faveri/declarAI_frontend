@@ -245,13 +245,14 @@ export default function MyDocumentsPage() {
       return;
     }
 
+    const uploadId = selectedId;
     let active = true;
 
     async function loadDetail() {
       setLoadingDetail(true);
       setError(null);
       try {
-        const response = await getMyUploadDetail(selectedId);
+        const response = await getMyUploadDetail(uploadId);
         if (!active) return;
         setDetail(response);
       } catch (loadError) {

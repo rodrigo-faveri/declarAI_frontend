@@ -1627,9 +1627,9 @@ export default function DeclarationDraftPage() {
                           Continuar esta ficha no chat
                         </Link>
                       </div>
-                      {Object.entries(decPreview.domain_summary || {}).length ? (
+                      {Object.entries(decPreview?.domain_summary || {}).length ? (
                         <div className="mt-4 flex flex-wrap gap-2">
-                          {Object.entries(decPreview.domain_summary).map(([domain, count]) => (
+                          {Object.entries(decPreview?.domain_summary || {}).map(([domain, count]) => (
                             <span
                               key={`dec-domain-${domain}`}
                               className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium ${

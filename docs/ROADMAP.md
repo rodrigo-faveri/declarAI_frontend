@@ -33,7 +33,7 @@ Critério de aceite: uma pessoa nova consegue entender o projeto, executá-lo e 
 Objetivo: tornar o projeto configurável e verificável em todos os ambientes.
 
 - [ ] Externalizar a URL da API para `NEXT_PUBLIC_API_URL`.
-- [ ] Alinhar `BillingAdminSummary` com o uso no painel e restaurar a build TypeScript.
+- [x] Alinhar `BillingAdminSummary` com o uso no painel e restaurar a build TypeScript.
 - [ ] Adicionar `.env.example` sem segredos.
 - [ ] Validar configuração ausente ou inválida com mensagem clara.
 - [ ] Mapear URLs, cookies, CORS e callbacks por ambiente junto ao backend.
