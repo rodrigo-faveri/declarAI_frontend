@@ -37,8 +37,9 @@ Objetivo: tornar o projeto configurável e verificável em todos os ambientes.
 - [x] Adicionar `.env.example` sem segredos.
 - [ ] Validar configuração ausente ou inválida com mensagem clara.
 - [ ] Mapear URLs, cookies, CORS e callbacks por ambiente junto ao backend.
-- [ ] Criar workflow de CI com `npm ci`, lint e build.
-- [ ] Adicionar template de pull request e responsáveis por revisão.
+- [x] Criar workflow de CI com `npm ci`, audit, lint, TypeScript e build.
+- [x] Adicionar template de pull request.
+- [ ] Definir responsáveis por revisão em `CODEOWNERS`.
 - [x] Documentar a arquitetura-base, o container e o contrato de configuração para deploy.
 - [ ] Escolher a plataforma e configurar preview/staging com variáveis reais.
 
@@ -55,6 +56,7 @@ Objetivo: proteger integrações e regras que têm maior impacto no usuário.
 - [ ] Configurar testes E2E para login, chat básico e upload.
 - [ ] Definir estratégia de mock/ambiente de teste do backend.
 - [ ] Publicar relatório de cobertura como sinal, sem meta artificial inicial.
+- [ ] Refatorar hidratação de estado e relógio do chat para promover as regras `react-hooks/set-state-in-effect` e `react-hooks/purity` de warning para erro.
 
 Critério de aceite: falhas nos contratos principais são detectadas automaticamente antes do merge.
 
