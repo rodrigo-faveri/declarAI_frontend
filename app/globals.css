@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --page-gradient:
+    radial-gradient(circle at top left, rgba(30, 41, 59, 0.45) 0%, rgba(2, 6, 23, 0) 35%),
+    linear-gradient(to bottom, #020617 0%, #0f172a 45%, #020617 100%);
+  --selection: rgba(16, 185, 129, 0.35);
+  --scroll-track: rgba(255, 255, 255, 0.04);
+  --scroll-thumb: rgba(148, 163, 184, 0.35);
+  --scroll-thumb-hover: rgba(148, 163, 184, 0.55);
+}
+
+html[data-theme="light"] {
+  --background: #f3f7fb;
+  --foreground: #0f172a;
+  --page-gradient:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.10) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(circle at top right, rgba(148, 163, 184, 0.10) 0%, rgba(255, 255, 255, 0) 24%),
+    linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 50%, #eef4f8 100%);
+  --selection: rgba(16, 185, 129, 0.2);
+  --scroll-track: rgba(15, 23, 42, 0.06);
+  --scroll-thumb: rgba(100, 116, 139, 0.35);
+  --scroll-thumb-hover: rgba(100, 116, 139, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--page-gradient);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--foreground);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+button:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(16, 185, 129, 0.55);
+  outline-offset: 2px;
+}
+
+button,
+a,
+textarea,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
