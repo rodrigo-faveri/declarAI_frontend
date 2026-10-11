@@ -34,6 +34,7 @@ O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md
 
 - Node.js 20 ou superior
 - npm
+- Docker Desktop (necessário para o Authentik local)
 - backend do DeclarAI executando localmente em `http://localhost:8000`
 
 ## Como executar
@@ -52,6 +53,10 @@ O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md
    npm run dev
    ```
 
+   Esse comando verifica o Docker, inicia o Docker Desktop no Windows quando
+   necessário, sobe o Authentik e aguarda seu healthcheck antes de iniciar o
+   Next.js. Por padrão, o Compose é lido de `C:\authentik\compose.yml`.
+
 4. Acesse [http://localhost:3000](http://localhost:3000).
 
 Atualmente, a URL da API está definida diretamente em `services/api.ts`. A externalização para variável de ambiente está priorizada no primeiro sprint de estabilização.
@@ -60,10 +65,43 @@ Atualmente, a URL da API está definida diretamente em `services/api.ts`. A exte
 
 | Comando | Descrição |
 | --- | --- |
-| `npm run dev` | Inicia o ambiente local de desenvolvimento |
+| `npm run dev` | Sobe o Authentik e inicia o frontend |
+| `npm run dev:web` | Inicia somente o frontend, sem gerenciar o Authentik |
+| `npm run dev:services` | Sobe e valida somente o Authentik |
 | `npm run build` | Gera a build otimizada de produção e valida o TypeScript |
 | `npm run start` | Executa a build de produção |
 | `npm run lint` | Executa as regras de lint do projeto |
+
+### Configuração do Authentik local
+
+O launcher aceita as seguintes variáveis:
+
+| Variável | Padrão | Uso |
+| --- | --- | --- |
+| `AUTHENTIK_COMPOSE_FILE` | `C:\authentik\compose.yml` no Windows | Caminho do arquivo Compose |
+| `AUTHENTIK_HEALTH_URL` | `http://localhost:9000/-/health/live/` | Endpoint usado para aguardar o serviço |
+| `AUTHENTIK_AUTO_START` | `true` | Use `false` para não iniciar Docker/Authentik |
+
+Exemplo no PowerShell para usar outro Compose:
+
+```powershell
+$env:AUTHENTIK_COMPOSE_FILE='D:\infra\authentik\compose.yml'
+npm run dev
+```
+
+Para executar apenas o frontend em uma sessão:
+
+```powershell
+$env:AUTHENTIK_AUTO_START='false'
+npm run dev
+```
+
+O launcher não encerra os containers ao fechar o Next.js, evitando derrubar
+sessões usadas por outros processos. Para pará-los explicitamente:
+
+```powershell
+docker compose -f C:\authentik\compose.yml down
+```
 
 ## Rotas da aplicação
 
