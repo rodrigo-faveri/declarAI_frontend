@@ -644,6 +644,8 @@ export type BillingAdminSummary = {
   checkout_configured: boolean;
   customer_portal_configured: boolean;
   webhook_configured: boolean;
+  provider_checkout_ready: boolean;
+  provider_checkout_message?: string | null;
   total_users: number;
   premium_users: number;
   free_users: number;

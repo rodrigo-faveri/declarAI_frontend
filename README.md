@@ -45,9 +45,15 @@ O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md
    npm install
    ```
 
-2. Inicie o backend do DeclarAI na porta `8000`.
+2. Crie o arquivo local de ambiente:
 
-3. Inicie o frontend:
+   ```powershell
+   Copy-Item .env.example .env.local
+   ```
+
+3. Inicie o backend do DeclarAI na porta `8000`.
+
+4. Inicie o frontend:
 
    ```bash
    npm run dev
@@ -59,7 +65,22 @@ O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md
 
 4. Acesse [http://localhost:3000](http://localhost:3000).
 
-Atualmente, a URL da API está definida diretamente em `services/api.ts`. A externalização para variável de ambiente está priorizada no primeiro sprint de estabilização.
+Variáveis com prefixo `NEXT_PUBLIC_` são incorporadas ao bundle pelo Next.js
+durante `npm run build`. Configure a URL correta antes de gerar a imagem ou o
+artefato de cada ambiente. Nunca armazene segredos em variáveis públicas.
+
+Exemplos:
+
+```env
+# Local
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# Staging
+NEXT_PUBLIC_API_URL=https://api.staging.exemplo.com
+
+# Produção
+NEXT_PUBLIC_API_URL=https://api.exemplo.com
+```
 
 ## Scripts
 
