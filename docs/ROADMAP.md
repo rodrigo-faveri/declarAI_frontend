@@ -120,10 +120,10 @@ Critério de aceite: o estado exibido converge com o provider e o time consegue 
 
 Objetivo: concluir o endurecimento da experiência e da entrega.
 
-- [ ] Auditar navegação por teclado, foco, contraste e leitores de tela.
+- [ ] Auditar navegação por teclado, foco, contraste e leitores de tela. (baseline de código concluído; validação manual pendente)
 - [ ] Executar auditoria de desempenho e reduzir bundles/efeitos desnecessários.
 - [ ] Adicionar metadados específicos por rota e identidade visual final.
-- [ ] Padronizar skeletons, estados vazios, erros e confirmações.
+- [x] Padronizar baseline de estados vazios, processamento, erros, retry e confirmações.
 - [ ] Validar layouts em celulares, tablets e desktop.
 - [ ] Remover assets e componentes comprovadamente não utilizados.
 - [ ] Criar checklist de release, rollback e smoke test de produção.

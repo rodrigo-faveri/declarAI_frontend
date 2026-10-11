@@ -18,7 +18,7 @@ O produto já possui uma base funcional com:
 - painéis administrativos de usuários, billing e auditoria;
 - temas claro e escuro e layouts responsivos.
 
-O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md), e os achados da revisão técnica estão em [docs/TECHNICAL_REVIEW.md](docs/TECHNICAL_REVIEW.md).
+O planejamento das próximas entregas está em [docs/ROADMAP.md](docs/ROADMAP.md), a implementação do backlog visual em [docs/UX_UI_BACKLOG.md](docs/UX_UI_BACKLOG.md), e os achados da revisão técnica estão em [docs/TECHNICAL_REVIEW.md](docs/TECHNICAL_REVIEW.md).
 
 A arquitetura e o checklist de publicação estão em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 

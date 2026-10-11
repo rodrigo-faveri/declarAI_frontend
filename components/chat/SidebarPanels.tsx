@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Pencil, RotateCcw, Trash2 } from "lucide-react";
+import { ChevronLeft, MoreHorizontal, Pencil, RotateCcw, Trash2 } from "lucide-react";
 import { HistoryCardDensity } from "@/types/chat";
 
 type HistoryItem = {
@@ -28,6 +28,7 @@ type SidebarPanelsProps = {
   isDark?: boolean;
   triageProfile?: Record<string, string>;
   activeTaxYear?: string;
+  onCollapse?: () => void;
 };
 
 function getHistoryGroupLabel(updatedAt: number) {
@@ -139,6 +140,7 @@ export default function SidebarPanels({
   isDark = true,
   triageProfile,
   activeTaxYear,
+  onCollapse,
 }: SidebarPanelsProps) {
   const [historyQuery, setHistoryQuery] = useState("");
   const [historyFilter, setHistoryFilter] = useState<
@@ -263,6 +265,7 @@ export default function SidebarPanels({
               </div>
             ) : null}
           </div>
+          <div className="flex items-center gap-2">
           {onChangeHistoryCardDensity ? (
             <div
               className={`inline-flex rounded-full border p-1 ${isDark
@@ -305,6 +308,18 @@ export default function SidebarPanels({
               })}
             </div>
           ) : null}
+          {onCollapse ? (
+            <button
+              type="button"
+              onClick={onCollapse}
+              className={`rounded-full border p-2 transition ${isDark ? "border-white/10 text-slate-300 hover:bg-white/10" : "border-slate-200 text-slate-600 hover:bg-slate-100"}`}
+              aria-label="Recolher histórico de conversas"
+              title="Recolher histórico"
+            >
+              <ChevronLeft size={15} />
+            </button>
+          ) : null}
+          </div>
         </div>
 
         {onNewConversation ? (
@@ -454,36 +469,46 @@ export default function SidebarPanels({
                           ) : null}
                         </div>
                       </button>
-                      <div className="flex items-center gap-2">
+                      {onRenameHistory || onDeleteHistory ? (
+                      <details className="group/actions relative">
+                        <summary
+                          className={`flex cursor-pointer list-none rounded-xl border p-2 transition [&::-webkit-details-marker]:hidden ${isDark ? "border-white/10 bg-black/20 text-slate-400 hover:bg-white/10" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-100"}`}
+                          aria-label={`Ações da conversa ${item.title}`}
+                        >
+                          <MoreHorizontal size={15} />
+                        </summary>
+                        <div className={`absolute right-0 z-20 mt-1 w-36 rounded-xl border p-1 shadow-xl ${isDark ? "border-white/10 bg-slate-900" : "border-slate-200 bg-white"}`}>
                         {onRenameHistory ? (
                           <button
                             type="button"
                             onClick={() => onRenameHistory(item.id)}
-                            className={`rounded-xl border p-2 transition ${isDark
-                                ? "border-white/10 bg-black/20 text-slate-400 hover:border-sky-400/30 hover:bg-sky-500/10 hover:text-sky-100"
-                                : "border-slate-200 bg-white text-slate-500 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700"
+                            className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${isDark
+                                ? "text-slate-200 hover:bg-white/10"
+                                : "text-slate-700 hover:bg-slate-100"
                               }`}
                             aria-label={`Renomear conversa ${item.title}`}
                             title="Renomear conversa"
                           >
-                            <Pencil size={15} />
+                            <Pencil size={14} /> Renomear
                           </button>
                         ) : null}
                         {onDeleteHistory ? (
                           <button
                             type="button"
                             onClick={() => onDeleteHistory(item.id)}
-                            className={`rounded-xl border p-2 transition ${isDark
-                                ? "border-white/10 bg-black/20 text-slate-400 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-200"
-                                : "border-slate-200 bg-white text-slate-500 hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                            className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${isDark
+                                ? "text-rose-200 hover:bg-rose-500/10"
+                                : "text-rose-700 hover:bg-rose-50"
                               }`}
                             aria-label={`Excluir conversa ${item.title}`}
                             title="Excluir conversa"
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={14} /> Excluir
                           </button>
                         ) : null}
-                      </div>
+                        </div>
+                      </details>
+                      ) : null}
                     </div>
                   </div>
                 ))}
