@@ -123,7 +123,7 @@ export default function UpgradePage() {
   const checkoutState = searchParams.get("checkout");
 
   return (
-    <AppShell activeSection="upgrade" maxWidth="max-w-6xl" forceDark>
+    <AppShell activeSection="upgrade" maxWidth="max-w-6xl">
       <div className="space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl lg:p-8">
           <div className="flex flex-wrap items-center gap-3">

@@ -1,9 +1,13 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import type { AuthUser } from "@/types/chat";
 import { AppShell, FocusModeNavigation } from "./AppShell";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }),
+}));
 
 const user: AuthUser = {
   id: "user-1",
@@ -50,5 +54,20 @@ describe("AppShell", () => {
     expect(screen.getByRole("navigation", { name: "Navegação do aplicativo" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "DeclarIA — início" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Chat" }).getAttribute("aria-current")).toBe("page");
+  });
+
+  it("abre o menu funcional do avatar e alterna o tema por ele", () => {
+    renderWithTheme(
+      <AppShell activeSection="home" user={user}>
+        <div>Dashboard</div>
+      </AppShell>
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Abrir perfil" }));
+    expect(screen.getByText("Dados do perfil")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Tema da interface/ })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /Tema da interface/ }));
+    expect(document.documentElement.dataset.theme).toBe("light");
   });
 });

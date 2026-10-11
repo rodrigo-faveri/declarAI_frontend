@@ -9,8 +9,8 @@ Toda nova página autenticada deve usar `components/layout/AppShell.tsx`. O comp
 - marca e navegação principal;
 - indicação da seção ativa;
 - atalhos condicionados ao papel do usuário;
-- resumo de conta e plano;
-- alternância de tema nas telas compatíveis;
+- menu de avatar com perfil, preferências, conta, plano e logout;
+- alternância de tema dentro do menu de avatar;
 - navegação horizontal em telas menores;
 - largura, espaçamento e fundo da área de conteúdo.
 
@@ -28,6 +28,8 @@ Exemplo:
 ```
 
 O chat usa `FocusModeNavigation`, uma variante compacta do mesmo sistema. Ela preserva o espaço da conversa sem isolar o usuário do restante do produto. Landing pública, login e páginas de erro podem usar uma composição própria, mas devem reutilizar os mesmos tokens.
+
+O avatar nunca deve ser renderizado como elemento apenas informativo. Nas áreas autenticadas ele sempre abre o `ProfileMenu`, e a troca entre tema claro e escuro deve acontecer dentro desse menu. A landing pública é a única exceção.
 
 ## Tokens e linguagem visual
 
@@ -71,6 +73,7 @@ Dados fiscais e permissões continuam vindo da API. O layout nunca deve sugerir 
 - [ ] Usa `AppShell` ou a variante de foco documentada.
 - [ ] Declara corretamente `activeSection`.
 - [ ] Não duplica marca, perfil ou navegação global.
+- [ ] O avatar abre o menu funcional compartilhado e não duplica o controle de tema fora dele.
 - [ ] Reutiliza os tokens de `app/globals.css`.
 - [ ] Trata desktop, mobile, loading, vazio, erro e permissão.
 - [ ] Inclui teste da navegação ou do comportamento novo.

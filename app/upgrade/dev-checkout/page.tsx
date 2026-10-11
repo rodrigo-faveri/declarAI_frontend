@@ -31,7 +31,7 @@ export default function DevCheckoutPage() {
   }
 
   return (
-    <AppShell activeSection="upgrade" maxWidth="max-w-3xl" forceDark>
+    <AppShell activeSection="upgrade" maxWidth="max-w-3xl">
       <div className="space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl lg:p-8">
           <div className="inline-flex rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-100">

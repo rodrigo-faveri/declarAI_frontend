@@ -167,7 +167,7 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
   ] as const;
 
   return (
-    <AppShell activeSection="home" user={user} taxYear={taxYear} maxWidth="max-w-[1400px]" forceDark>
+    <AppShell activeSection="home" user={user} taxYear={taxYear} maxWidth="max-w-[1400px]">
       <div className="space-y-4">
               <section className="grid overflow-hidden rounded-2xl border border-white/8 bg-[#0d1a2d] lg:grid-cols-[1.08fr_0.92fr]">
                 <div className="p-6 sm:p-8 xl:p-10">

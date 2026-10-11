@@ -131,6 +131,45 @@ select:disabled {
   cursor: not-allowed;
 }
 
+/* Mantém páginas originalmente desenhadas apenas no tema escuro coerentes
+   enquanto elas migram para os tokens semânticos compartilhados do AppShell. */
+html[data-theme="light"] .app-shell-content .bg-\[\#0d1a2d\],
+html[data-theme="light"] .app-shell-content .bg-slate-800,
+html[data-theme="light"] .app-shell-content .bg-slate-800\/60,
+html[data-theme="light"] .app-shell-content .bg-slate-800\/65,
+html[data-theme="light"] .app-shell-content .bg-slate-900\/35,
+html[data-theme="light"] .app-shell-content .bg-slate-950\/30,
+html[data-theme="light"] .app-shell-content .bg-slate-950\/35,
+html[data-theme="light"] .app-shell-content .bg-slate-950\/40,
+html[data-theme="light"] .app-shell-content .bg-slate-950\/50,
+html[data-theme="light"] .app-shell-content .bg-white\/\[0\.03\],
+html[data-theme="light"] .app-shell-content .bg-white\/\[0\.04\],
+html[data-theme="light"] .app-shell-content .bg-white\/\[0\.045\],
+html[data-theme="light"] .app-shell-content .bg-white\/\[0\.05\] {
+  background-color: #ffffff !important;
+}
+
+html[data-theme="light"] .app-shell-content .text-white,
+html[data-theme="light"] .app-shell-content .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html[data-theme="light"] .app-shell-content .text-slate-200,
+html[data-theme="light"] .app-shell-content .text-slate-300 {
+  color: #334155 !important;
+}
+
+html[data-theme="light"] .app-shell-content .text-slate-400,
+html[data-theme="light"] .app-shell-content .text-slate-500 {
+  color: #64748b !important;
+}
+
+html[data-theme="light"] .app-shell-content .border-white\/8,
+html[data-theme="light"] .app-shell-content .border-white\/10,
+html[data-theme="light"] .app-shell-content .border-white\/15 {
+  border-color: #e2e8f0 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

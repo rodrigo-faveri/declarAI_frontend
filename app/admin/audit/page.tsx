@@ -178,7 +178,7 @@ export default function AdminAuditPage() {
   }
 
   return (
-    <AppShell activeSection="admin" user={authUser} maxWidth="max-w-6xl" forceDark>
+    <AppShell activeSection="admin" user={authUser} maxWidth="max-w-6xl">
       <div className="space-y-6">
         <div className="rounded-[1.9rem] border border-white/10 bg-white/[0.045] p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
