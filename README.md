@@ -184,10 +184,11 @@ Antes de integrar qualquer mudança:
 ```bash
 npm run lint
 npm run typecheck
+npm test
 npm run build
 ```
 
-Ainda não há suíte automatizada de testes nem workflow de integração contínua. Ambos estão previstos no roadmap.
+Os testes usam Vitest, jsdom e Testing Library. Execute `npm run test:watch` durante o desenvolvimento. O workflow de CI repete audit de dependências de produção, lint, verificação de tipos, testes e build em cada pull request e push na `main`.
 
 ## Fluxo de contribuição
 
@@ -196,7 +197,7 @@ O bootstrap documental deste repositório será feito diretamente na `main`. A p
 1. atualize a `main`;
 2. crie uma branch com prefixo `feat/`, `fix/`, `refactor/`, `docs/` ou `chore/`;
 3. implemente uma alteração de escopo pequeno;
-4. execute lint e build;
+4. execute lint, verificação de tipos, testes e build;
 5. abra um PR descrevendo contexto, solução, validação e evidências visuais quando houver UI;
 6. faça merge somente após revisão e checks aprovados.
 

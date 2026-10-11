@@ -49,8 +49,8 @@ Critério de aceite: o mesmo código gera builds para local, preview e produçã
 
 Objetivo: proteger integrações e regras que têm maior impacto no usuário.
 
-- [ ] Configurar framework de testes unitários e de componentes.
-- [ ] Testar `apiFetch`, CSRF, erros HTTP, falha de rede e `Retry-After`.
+- [x] Configurar framework de testes unitários e de componentes.
+- [x] Testar `apiFetch`, CSRF, erros HTTP, falha de rede e `Retry-After`.
 - [ ] Criar fixtures tipadas para autenticação, chat, upload e declaração.
 - [ ] Testar permissões e limites por papel/plano na navegação.
 - [ ] Configurar testes E2E para login, chat básico e upload.
