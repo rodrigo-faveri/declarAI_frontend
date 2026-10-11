@@ -5,7 +5,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 
 type Theme = "dark" | "light";
@@ -20,12 +20,9 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const STORAGE_KEY = "declaria_theme";
+const THEME_CHANGE_EVENT = "declaria-theme-change";
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
+function getBrowserTheme(): Theme {
   const storedTheme = window.localStorage.getItem(STORAGE_KEY);
   if (storedTheme === "light" || storedTheme === "dark") {
     return storedTheme;
@@ -36,24 +33,56 @@ function getInitialTheme(): Theme {
     : "dark";
 }
 
+function getServerTheme(): Theme {
+  return "dark";
+}
+
+function subscribeToTheme(onStoreChange: () => void) {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+
+  function handlePreferredThemeChange() {
+    if (!window.localStorage.getItem(STORAGE_KEY)) {
+      onStoreChange();
+    }
+  }
+
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(THEME_CHANGE_EVENT, onStoreChange);
+  mediaQuery.addEventListener?.("change", handlePreferredThemeChange);
+
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(THEME_CHANGE_EVENT, onStoreChange);
+    mediaQuery.removeEventListener?.("change", handlePreferredThemeChange);
+  };
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const theme = useSyncExternalStore(
+    subscribeToTheme,
+    getBrowserTheme,
+    getServerTheme
+  );
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
   const value = useMemo(
-    () => ({
-      theme,
-      resolvedTheme: theme,
-      setTheme: (nextTheme: Theme) => setThemeState(nextTheme),
-      toggleTheme: () =>
-        setThemeState((currentTheme) =>
-          currentTheme === "dark" ? "light" : "dark"
-        ),
-    }),
+    () => {
+      function setTheme(nextTheme: Theme) {
+        window.localStorage.setItem(STORAGE_KEY, nextTheme);
+        document.documentElement.dataset.theme = nextTheme;
+        window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+      }
+
+      return {
+        theme,
+        resolvedTheme: theme,
+        setTheme,
+        toggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
+      };
+    },
     [theme]
   );
 
