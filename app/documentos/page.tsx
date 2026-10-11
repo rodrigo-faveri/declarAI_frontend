@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { AppShell } from "@/components/layout/AppShell";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { isPremiumPlan as checkPremiumPlan } from "@/lib/access-control";
 import { ApiError, getAuthStatus, getMyUploadDetail, listMyUploads } from "@/services/api";
@@ -377,8 +378,8 @@ export default function MyDocumentsPage() {
   }
 
   return (
-    <main className={pageClassName}>
-      <section className="mx-auto flex min-h-screen w-full max-w-[1500px] flex-col gap-4 px-4 py-4 lg:px-6">
+    <AppShell activeSection="documents" user={authUser} maxWidth="max-w-[1500px]">
+      <section className="flex w-full flex-col gap-4">
         <header
           className={`rounded-[1.5rem] border px-6 py-5 ${
             isDark ? "border-white/10 bg-[#0f172a]" : "border-slate-200 bg-white"
@@ -721,6 +722,6 @@ export default function MyDocumentsPage() {
           </div>
         </div>
       </section>
-    </main>
+    </AppShell>
   );
 }

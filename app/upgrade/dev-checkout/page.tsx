@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CheckCircle2, CreditCard, Loader2, XCircle } from "lucide-react";
 
+import { AppShell } from "@/components/layout/AppShell";
 import { ApiError, completeDevBillingCheckout } from "@/services/api";
 
 export default function DevCheckoutPage() {
@@ -30,8 +31,8 @@ export default function DevCheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_26%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_22%),linear-gradient(180deg,_#020617_0%,_#0f172a_55%,_#020617_100%)] px-6 py-10 text-slate-100">
-      <div className="mx-auto max-w-3xl space-y-6">
+    <AppShell activeSection="upgrade" maxWidth="max-w-3xl" forceDark>
+      <div className="space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl lg:p-8">
           <div className="inline-flex rounded-full border border-amber-300/20 bg-amber-400/10 px-3 py-1 text-xs font-medium text-amber-100">
             Checkout local de teste
@@ -89,6 +90,6 @@ export default function DevCheckoutPage() {
           </div>
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }

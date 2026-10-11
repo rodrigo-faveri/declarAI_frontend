@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CreditCard, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { AppShell } from "@/components/layout/AppShell";
 import { canAccessAdmin } from "@/lib/access-control";
 import { getAuthStatus, getBillingAdminSummary, updateBillingProvider } from "@/services/api";
 import { AuthUser, BillingAdminSummary } from "@/types/chat";
@@ -201,8 +202,8 @@ export default function AdminBillingPage() {
   const activeProvider = (summary?.available_providers || []).find((provider) => provider.active);
 
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <AppShell activeSection="admin" user={authUser} maxWidth="max-w-6xl" forceDark>
+      <div className="space-y-6">
         <div className="rounded-[1.9rem] border border-white/10 bg-white/[0.045] p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -793,6 +794,6 @@ export default function AdminBillingPage() {
           </div>
         </div>
       </div>
-    </main>
+    </AppShell>
   );
 }

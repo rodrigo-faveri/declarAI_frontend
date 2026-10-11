@@ -16,6 +16,10 @@ Rastreabilidade do arquivo `DeclarIA_UX_UI_Backlog.json`, recebido em 11 de outu
 | UX-010 | Concluído | Landing mostra conversa demonstrativa identificada, CTA primário e aviso responsável; atalhos DEV só existem em desenvolvimento. |
 | UX-011 | Concluído | Hierarquia, feedbacks, transições e comportamento global para `prefers-reduced-motion`. |
 
+## Padronização entre páginas
+
+O dashboard passou a ser a referência visual das áreas autenticadas. Home, declaração, documentos, observabilidade, upgrade e administração compartilham o `AppShell`; o chat usa sua variante compacta de foco. As regras para evoluir telas sem criar novos padrões paralelos estão em [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md).
+
 ## Dependências do backend
 
 - Fontes, exercício fiscal e confiança nunca são fabricados pelo frontend; aparecem apenas quando presentes no contrato da resposta.

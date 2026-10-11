@@ -10,6 +10,7 @@ import { LoadingMessage, MessageBubble } from "@/components/chat/MessageBubble";
 import MobileDrawer from "@/components/chat/MobileDrawer";
 import ProfileMenu from "@/components/chat/ProfileMenu";
 import SidebarPanels from "@/components/chat/SidebarPanels";
+import { FocusModeNavigation } from "@/components/layout/AppShell";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import {
   canAccessTechnicalUploads,
@@ -2404,6 +2405,7 @@ export default function HomePage() {
       />
 
       <section className="mx-auto flex min-h-[calc(100vh-1.5rem)] w-full max-w-[1600px] flex-col gap-3 px-3 py-3 sm:min-h-[calc(100vh-2rem)] sm:px-4 sm:py-4 lg:px-5 lg:py-4 xl:px-6">
+        <FocusModeNavigation />
         <div className={`grid min-h-0 flex-1 gap-3 xl:items-start ${desktopSidebarOpen ? "xl:grid-cols-[285px_minmax(0,1fr)]" : "xl:grid-cols-1"}`}>
           {desktopSidebarOpen ? <SidebarPanels
             historyItems={historyItems}

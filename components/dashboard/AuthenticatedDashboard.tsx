@@ -4,25 +4,19 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
-  Bell,
-  BookOpen,
   Bot,
   Check,
   ChevronRight,
-  CircleHelp,
-  Clock3,
   FileCheck2,
   FileText,
   GraduationCap,
-  Home,
   MessageSquare,
   MoreHorizontal,
-  ShieldCheck,
   Upload,
 } from "lucide-react";
 
+import { AppShell } from "@/components/layout/AppShell";
 import {
-  canAccessAdmin,
   canAccessTechnicalUploads,
   isPremiumPlan,
 } from "@/lib/access-control";
@@ -164,15 +158,7 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
 
   const taxYear = data.draft?.tax_year;
   const firstName = user.name?.trim().split(/\s+/)[0] || "Olá";
-  const initials = (user.name || user.email).split(/\s+|@/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("");
   const uploadAllowed = user.usage?.uploads_allowed ?? (isPremiumPlan(user.plan) || canAccessTechnicalUploads(user.role));
-  const navigation = [
-    { label: "Início", href: "/", icon: Home, active: true },
-    { label: "Chat", href: "/chat", icon: MessageSquare },
-    { label: "Minha declaração", href: "/declaracao", icon: FileCheck2 },
-    { label: "Documentos", href: "/documentos", icon: FileText },
-    { label: "Histórico", href: "/chat", icon: Clock3 },
-  ];
   const quickActions = [
     { label: "Conversar com a IA", description: "Tire dúvidas sobre o IRPF", href: "/chat", icon: MessageSquare, tone: "emerald" },
     { label: "Enviar documentos", description: uploadAllowed ? "Analise informes e comprovantes" : "Disponível no Premium", href: uploadAllowed ? "/chat?prompt=Quero enviar e analisar um documento" : "/upgrade", icon: Upload, tone: "sky" },
@@ -181,44 +167,8 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
   ] as const;
 
   return (
-    <main className="min-h-screen bg-[#07101f] text-slate-100">
-      <div className="mx-auto flex min-h-screen max-w-[1720px]">
-        <aside className="hidden w-60 shrink-0 flex-col border-r border-white/8 bg-[#081322] lg:flex">
-          <div className="flex h-20 items-center border-b border-white/8 px-5">
-            <Link href="/" className="flex items-center gap-2 text-xl font-semibold tracking-tight">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400/12 text-emerald-300"><FileCheck2 size={21} /></span>
-              Declar<span className="text-emerald-400">IA</span>
-            </Link>
-          </div>
-          <nav aria-label="Navegação principal" className="space-y-1.5 p-3">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return <Link key={item.label} href={item.href} aria-current={item.active ? "page" : undefined} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition ${item.active ? "bg-slate-800/85 text-emerald-300" : "text-slate-400 hover:bg-white/5 hover:text-white"}`}><Icon size={17} /> {item.label}</Link>;
-            })}
-            {canAccessTechnicalUploads(user.role) ? <Link href="/uploads" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"><ShieldCheck size={17} /> Operação</Link> : null}
-            {canAccessAdmin(user.role) ? <Link href="/admin/users" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"><ShieldCheck size={17} /> Administração</Link> : null}
-          </nav>
-          <div className="mt-auto space-y-1 p-3">
-            <Link href="/chat?prompt=Quero aprender a organizar minha declaração" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-white"><BookOpen size={16} /> Aprender</Link>
-            <Link href="/chat?prompt=Preciso de ajuda para usar o DeclarIA" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-white"><CircleHelp size={16} /> Ajuda</Link>
-            <div className="mt-3 rounded-2xl border border-emerald-400/10 bg-emerald-400/[0.06] p-3"><div className="flex items-center gap-2 text-xs font-semibold text-emerald-300"><FileCheck2 size={15} /> {taxYear ? `Base IRPF ${taxYear}` : "Base IRPF"}</div><div className="mt-1 text-[11px] text-slate-500">Conectada à base ativa</div></div>
-          </div>
-        </aside>
-
-        <div className="min-w-0 flex-1">
-          <header className="flex h-20 items-center justify-between border-b border-white/8 bg-[#091526]/85 px-4 backdrop-blur sm:px-6 xl:px-8">
-            <Link href="/" className="flex items-center gap-2 font-semibold lg:hidden"><FileCheck2 className="text-emerald-400" size={20} /> DeclarIA</Link>
-            <div className="hidden lg:block" />
-            <div className="flex items-center gap-3">
-              <button type="button" className="relative rounded-xl p-2 text-slate-400 hover:bg-white/5 hover:text-white" aria-label="Notificações"><Bell size={18} /><span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-rose-400" /></button>
-              <div className="h-8 w-px bg-white/10" />
-              <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-sky-300 to-emerald-400 text-xs font-bold text-slate-950">{initials || "U"}</div>
-              <div className="hidden sm:block"><div className="text-sm font-medium text-white">{user.name || user.email}</div><div className="text-[11px] text-emerald-300">Plano {isPremiumPlan(user.plan) ? "Premium" : "Free"}</div></div>
-            </div>
-          </header>
-
-          <div className="overflow-x-hidden p-4 sm:p-6 xl:p-8">
-            <div className="mx-auto max-w-[1400px] space-y-4">
+    <AppShell activeSection="home" user={user} taxYear={taxYear} maxWidth="max-w-[1400px]" forceDark>
+      <div className="space-y-4">
               <section className="grid overflow-hidden rounded-2xl border border-white/8 bg-[#0d1a2d] lg:grid-cols-[1.08fr_0.92fr]">
                 <div className="p-6 sm:p-8 xl:p-10">
                   <p className="text-sm text-slate-400">Olá, {firstName} 👋</p>
@@ -254,10 +204,7 @@ export default function AuthenticatedDashboard({ user }: { user: AuthUser }) {
               </div>
 
               <section className="overflow-hidden rounded-2xl border border-white/8 bg-[#0d1a2d]" aria-labelledby="recent-conversations-title"><div className="flex items-center justify-between gap-3 border-b border-white/8 px-5 py-4"><h2 id="recent-conversations-title" className="font-semibold text-white">Conversas recentes</h2><Link href="/chat" className="inline-flex items-center gap-1 text-xs text-sky-300 hover:text-sky-200">Ver todas <ChevronRight size={13} /></Link></div>{data.conversations.length ? <div className="divide-y divide-white/5">{data.conversations.slice(0, 4).map((conversation) => <Link key={conversation.id} href={`/chat?conversation=${encodeURIComponent(conversation.id)}`} className="grid gap-2 px-5 py-3.5 transition hover:bg-white/[0.025] sm:grid-cols-[minmax(220px,0.8fr)_minmax(260px,1.2fr)_100px_32px] sm:items-center"><div className="flex min-w-0 items-center gap-3"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-800 text-slate-300"><MessageSquare size={14} /></span><span className="truncate text-xs font-medium text-slate-200">{conversation.title}</span></div><span className="truncate text-xs text-slate-500">{conversation.preview}</span><span className="text-[11px] text-slate-500">{formatShortDate(conversation.updated_at)}</span><MoreHorizontal className="hidden text-slate-600 sm:block" size={16} /></Link>)}</div> : <div className="px-5 py-8 text-center text-sm text-slate-500">Sua primeira conversa aparecerá aqui. <Link href="/chat" className="text-emerald-300">Começar agora</Link></div>}</section>
-            </div>
-          </div>
-        </div>
       </div>
-    </main>
+    </AppShell>
   );
 }
