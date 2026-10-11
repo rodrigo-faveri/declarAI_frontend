@@ -41,6 +41,7 @@ docs: documenta ambiente local
 - [ ] Fluxos alterados foram validados manualmente com o backend.
 - [ ] Contratos modificados estão alinhados com o repositório do backend.
 - [ ] Estados de carregamento, vazio, erro e permissão foram considerados.
+- [ ] Páginas autenticadas usam o `AppShell` ou uma variante prevista em `docs/DESIGN_SYSTEM.md`.
 - [ ] Não há segredos, tokens, documentos fiscais ou dados pessoais no diff.
 - [ ] Mudanças visuais têm capturas de tela em desktop e mobile.
 - [ ] README e roadmap foram atualizados, quando necessário.

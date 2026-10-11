@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Crown, FileUp, Infinity as InfinityIcon, Loader2, MessagesSquare, ShieldCheck, Sparkles } from "lucide-react";
 
+import { AppShell } from "@/components/layout/AppShell";
 import { ApiError, getBillingSummary, startBillingCheckout } from "@/services/api";
 import { BillingSummary } from "@/types/chat";
 
@@ -122,8 +123,8 @@ export default function UpgradePage() {
   const checkoutState = searchParams.get("checkout");
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_26%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.12),_transparent_22%),linear-gradient(180deg,_#020617_0%,_#0f172a_55%,_#020617_100%)] px-6 py-10 text-slate-100">
-      <div className="mx-auto max-w-6xl space-y-6">
+    <AppShell activeSection="upgrade" maxWidth="max-w-6xl">
+      <div className="space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.18)] backdrop-blur-xl lg:p-8">
           <div className="flex flex-wrap items-center gap-3">
             <div className="inline-flex rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-100">
@@ -369,6 +370,6 @@ export default function UpgradePage() {
           </div>
         </section>
       </div>
-    </main>
+    </AppShell>
   );
 }
