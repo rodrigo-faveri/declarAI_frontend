@@ -6,7 +6,7 @@ import { Check, Copy, ExternalLink, ThumbsDown, ThumbsUp } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getSourceDocumentUrl } from "@/services/api";
-import { UiMessage } from "@/types/chat";
+import { UiMessage, UploadAnalysis } from "@/types/chat";
 
 type MessageBubbleProps = {
   message: UiMessage;
@@ -273,7 +273,9 @@ function formatFileSize(sizeBytes?: number) {
   return `${sizeBytes} B`;
 }
 
-function hasVisibleUploadAnalysis(message: UiMessage) {
+function hasVisibleUploadAnalysis(
+  message: UiMessage
+): message is UiMessage & { uploadAnalysis: UploadAnalysis } {
   const analysis = message.uploadAnalysis;
   if (!analysis) return false;
 
