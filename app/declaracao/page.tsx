@@ -970,8 +970,8 @@ export default function DeclarationDraftPage() {
                     O que ja foi fechado
                   </div>
                   <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                    {draft.final_checklist.completed_steps.map((step) => (
-                      <li key={step}>- {step}</li>
+                    {draft.final_checklist.completed_steps.map((step, stepIndex) => (
+                      <li key={`completed-${stepIndex}-${step}`}>- {step}</li>
                     ))}
                   </ul>
                 </div>
@@ -987,8 +987,8 @@ export default function DeclarationDraftPage() {
                     O que ainda exige atencao
                   </div>
                   <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                    {draft.final_checklist.attention_steps.map((step) => (
-                      <li key={step}>- {step}</li>
+                    {draft.final_checklist.attention_steps.map((step, stepIndex) => (
+                      <li key={`attention-${stepIndex}-${step}`}>- {step}</li>
                     ))}
                   </ul>
                 </div>
@@ -1083,8 +1083,8 @@ export default function DeclarationDraftPage() {
                       Checagens concluidas
                     </div>
                     <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                      {draft.pre_submit.completed_checks.map((step) => (
-                        <li key={step}>- {step}</li>
+                      {draft.pre_submit.completed_checks.map((step, stepIndex) => (
+                        <li key={`pre-submit-check-${stepIndex}-${step}`}>- {step}</li>
                       ))}
                     </ul>
                   </div>
@@ -1100,8 +1100,8 @@ export default function DeclarationDraftPage() {
                       Bloqueios atuais
                     </div>
                     <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                      {draft.pre_submit.blockers.map((blocker) => (
-                        <li key={blocker}>- {blocker}</li>
+                      {draft.pre_submit.blockers.map((blocker, blockerIndex) => (
+                        <li key={`pre-submit-blocker-${blockerIndex}-${blocker}`}>- {blocker}</li>
                       ))}
                     </ul>
                   </div>
@@ -1132,9 +1132,9 @@ export default function DeclarationDraftPage() {
 
                 {draft.final_consolidation.sections.length ? (
                   <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-                    {draft.final_consolidation.sections.map((section) => (
+                    {draft.final_consolidation.sections.map((section, sectionIndex) => (
                       <div
-                        key={section.title}
+                        key={`consolidation-${sectionIndex}-${section.title}`}
                         className={`rounded-2xl border px-4 py-4 ${
                           isDark ? "border-white/10 bg-white/[0.04]" : "border-slate-200 bg-slate-50"
                         }`}
@@ -1147,8 +1147,8 @@ export default function DeclarationDraftPage() {
                           {section.title}
                         </div>
                         <ul className={`mt-3 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                          {section.items.map((item) => (
-                            <li key={item}>- {item}</li>
+                          {section.items.map((item, itemIndex) => (
+                            <li key={`section-item-${itemIndex}-${item}`}>- {item}</li>
                           ))}
                         </ul>
                       </div>
@@ -1170,8 +1170,8 @@ export default function DeclarationDraftPage() {
                       Alertas finais
                     </div>
                     <ul className={`mt-3 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                      {draft.final_consolidation.alerts.map((item) => (
-                        <li key={item}>- {item}</li>
+                      {draft.final_consolidation.alerts.map((item, itemIndex) => (
+                        <li key={`consolidation-alert-${itemIndex}-${item}`}>- {item}</li>
                       ))}
                     </ul>
                   </div>
@@ -1348,11 +1348,11 @@ export default function DeclarationDraftPage() {
                         Pendencias para o DEC final
                       </div>
                       <ul className={`mt-3 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                        {decCandidate.layout_blockers.map((item) => (
-                          <li key={item}>- {item}</li>
+                        {decCandidate.layout_blockers.map((item, itemIndex) => (
+                          <li key={`layout-blocker-${itemIndex}-${item}`}>- {item}</li>
                         ))}
-                        {decCandidate.unresolved_fields.slice(0, 6).map((item) => (
-                          <li key={item}>- {item}</li>
+                        {decCandidate.unresolved_fields.slice(0, 6).map((item, itemIndex) => (
+                          <li key={`unresolved-field-${itemIndex}-${item}`}>- {item}</li>
                         ))}
                       </ul>
                     </div>
@@ -1509,11 +1509,11 @@ export default function DeclarationDraftPage() {
                         Bloqueios e pendencias
                       </div>
                       <ul className={`mt-3 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                        {decPreview.layout_blockers.map((blocker) => (
-                          <li key={blocker}>- {blocker}</li>
+                        {decPreview.layout_blockers.map((blocker, blockerIndex) => (
+                          <li key={`preview-blocker-${blockerIndex}-${blocker}`}>- {blocker}</li>
                         ))}
-                        {decPreview.unresolved_fields.slice(0, 6).map((field) => (
-                          <li key={field}>- {field}</li>
+                        {decPreview.unresolved_fields.slice(0, 6).map((field, fieldIndex) => (
+                          <li key={`preview-field-${fieldIndex}-${field}`}>- {field}</li>
                         ))}
                       </ul>
                     </div>
@@ -1580,8 +1580,8 @@ export default function DeclarationDraftPage() {
                             O que ja esta concluido
                           </div>
                           <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                            {checklist.completed_steps.map((step) => (
-                              <li key={step}>- {step}</li>
+                            {checklist.completed_steps.map((step, stepIndex) => (
+                              <li key={`sheet-completed-${stepIndex}-${step}`}>- {step}</li>
                             ))}
                           </ul>
                         </div>
@@ -1597,8 +1597,8 @@ export default function DeclarationDraftPage() {
                             O que ainda merece atencao
                           </div>
                           <ul className={`mt-2 space-y-2 text-sm ${isDark ? "text-slate-200" : "text-slate-700"}`}>
-                            {checklist.attention_steps.map((step) => (
-                              <li key={step}>- {step}</li>
+                            {checklist.attention_steps.map((step, stepIndex) => (
+                              <li key={`sheet-attention-${stepIndex}-${step}`}>- {step}</li>
                             ))}
                           </ul>
                         </div>
